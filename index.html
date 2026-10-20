@@ -1,570 +1,899 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>موعود — پیکره‌ب غذا</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<style>
-:root{
-  --bg:oklch(97% 0.008 200); --surface:#fff; --border:#e4edec;
-  --accent:oklch(45% 0.15 185); --accent-hex:#0d7a6e; --accent-light:oklch(93% 0.05 185); --accent-light-hex:#d7efec;
-  --danger:oklch(55% 0.18 25); --danger-hex:#c0392b;
-  --success:oklch(55% 0.15 150); --success-hex:#1e8a5f;
-  --text:oklch(15% 0.02 200); --muted:oklch(50% 0.02 200);
-  --shadow:0 1px 3px rgba(0,0,0,.08); --radius:8px;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
-body{font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.7;padding-bottom:76px}
-.page{display:none;max-width:860px;margin:0 auto;padding:16px 14px 24px;opacity:0;transform:translateY(10px)}
-.page.active{display:block;animation:fadeSlide .35s ease forwards}
-@keyframes fadeSlide{to{opacity:1;transform:none}}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px;animation:fadeSlide .4s ease both}
-.card:nth-child(2){animation-delay:.05s}.card:nth-child(3){animation-delay:.1s}.card:nth-child(4){animation-delay:.15s}
-h1{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px}
-h2{font-size:16px;font-weight:700;margin-bottom:10px}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.logo-badge{width:38px;height:38px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;box-shadow:var(--shadow)}
-.muted{color:var(--muted);font-size:12.5px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media(max-width:520px){.grid3{grid-template-columns:1fr 1fr}}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px}
-.stat .lbl{font-size:11.5px;color:var(--muted)}
-.stat .val{font-size:17px;font-weight:800;margin-top:2px}
-.stat .val small{font-size:11px;font-weight:400;color:var(--muted)}
-.stat.good .val{color:var(--success)} .stat.bad .val{color:var(--danger)}
-.btn{min-height:44px;border:none;border-radius:var(--radius);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;padding:10px 18px;transition:transform .15s,box-shadow .15s,background .15s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
-.btn:active{transform:scale(.97)}
-.btn-primary{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(13,122,110,.25)}
-.btn-primary:hover{background:oklch(40% 0.15 185)}
-.btn-ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
-.btn-ghost:hover{background:var(--accent-light)}
-.btn-block{width:100%}
-.btn-sm{min-height:36px;font-size:13px;padding:6px 12px}
-.big-menu{display:flex;flex-direction:column;gap:12px}
-.menu-btn{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 16px;cursor:pointer;text-align:right;min-height:44px;transition:transform .15s,box-shadow .15s;font-family:inherit;animation:fadeSlide .4s ease both}
-.menu-btn:nth-child(2){animation-delay:.06s}.menu-btn:nth-child(3){animation-delay:.12s}
-.menu-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
-.menu-btn:active{transform:scale(.98)}
-.menu-icon{width:46px;height:46px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.menu-icon svg{width:24px;height:24px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.menu-btn .t{font-size:15.5px;font-weight:700}
-.menu-btn .d{font-size:12px;color:var(--muted)}
-nav.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);display:flex;box-shadow:0 -2px 10px rgba(0,0,0,.05);z-index:50}
-nav.bottom button{flex:1;background:none;border:none;font-family:inherit;font-size:11px;color:var(--muted);padding:9px 0 11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .2s}
-nav.bottom button svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-nav.bottom button.active{color:var(--accent);font-weight:700}
-/* Tabs */
-.tabs{display:flex;background:var(--accent-light);border-radius:var(--radius);padding:4px;margin-bottom:12px}
-.tabs button{flex:1;border:none;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--muted);padding:9px;border-radius:6px;cursor:pointer;transition:all .2s;min-height:44px}
-.tabs button.active{background:#fff;color:var(--accent);box-shadow:var(--shadow)}
-/* Table */
-.tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{background:var(--accent-light);color:var(--accent);font-weight:700;padding:9px 8px;text-align:right;white-space:nowrap}
-td{padding:9px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
-tr.row-ok td{background:rgba(30,138,95,.06)}
-tr.row-bad td{background:rgba(192,57,43,.06)}
-tr.row-bad .status{color:var(--danger);font-weight:700}
-tr.row-ok .status{color:var(--success);font-weight:700}
-.badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700}
-.badge-ok{background:rgba(30,138,95,.12);color:var(--success)}
-.badge-bad{background:rgba(192,57,43,.12);color:var(--danger)}
-/* Wizard */
-.wizard-overlay{position:fixed;inset:0;background:rgba(15,35,33,.5);z-index:100;display:none;opacity:0;transition:opacity .25s;backdrop-filter:blur(3px)}
-.wizard-overlay.open{display:flex;opacity:1}
-.wizard{background:#fff;width:100%;max-width:480px;margin:auto;border-radius:14px;padding:22px 18px 18px;max-height:92vh;overflow-y:auto;transform:translateY(20px);transition:transform .25s;animation:none}
-.wizard-overlay.open .wizard{transform:none}
-.steps{display:flex;align-items:center;gap:4px;margin:14px 0 20px}
-.step-dot{flex:1;height:5px;border-radius:99px;background:var(--border);transition:background .3s}
-.step-dot.done{background:var(--accent)}
-.wstep{display:none}
-.wstep.active{display:block;animation:fadeSlide .3s ease both}
-.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.choice button{border:2px solid var(--border);background:#fff;border-radius:var(--radius);padding:16px 10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;color:var(--text);min-height:44px;transition:all .2s}
-.choice button.sel{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
-.choice button:hover{border-color:var(--accent)}
-input[type=date],input[type=text],input[type=number]{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:15px;background:#fff;min-height:44px}
-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
-.suggest-box{background:var(--accent-light);border:1.5px dashed var(--accent);border-radius:var(--radius);padding:16px;text-align:center}
-.suggest-box .num{font-size:30px;font-weight:800;color:var(--accent)}
-.wnav{display:flex;gap:10px;margin-top:18px}
-.wnav .btn{flex:1}
-summary-rows{display:block}
-.srow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--border);font-size:14px}
-.srow b{font-weight:700}
-.err{color:var(--danger);font-size:12.5px;margin-top:6px;display:none}
-/* progress bars */
-.pbar{height:12px;background:var(--accent-light);border-radius:99px;overflow:hidden;margin-top:6px}
-.pbar>div{height:100%;border-radius:99px;background:var(--accent);transition:width .8s cubic-bezier(.2,.8,.2,1)}
-.pbar>div.over{background:var(--danger)}
-.chart-box{position:relative;height:260px}
-.skeleton{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;background:linear-gradient(90deg,#f2f7f6 25%,#e7f0ef 50%,#f2f7f6 75%);background-size:200% 100%;animation:shimmer 1.3s infinite;border-radius:var(--radius)}
-@keyframes shimmer{to{background-position:-200% 0}}
-.empty{text-align:center;padding:34px 16px;color:var(--muted)}
-.empty svg{width:110px;height:110px;stroke:#b9d4d1;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
-footer{text-align:center;font-size:11.5px;color:var(--muted);padding:10px 0 4px}
-/* toast */
-#toasts{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;width:min(92vw,420px)}
-.toast{background:#223c39;color:#fff;padding:12px 16px;border-radius:var(--radius);box-shadow:0 4px 14px rgba(0,0,0,.2);font-size:13.5px;display:flex;gap:8px;align-items:center;animation:toastIn .3s ease}
-.toast.warn{background:var(--danger)}
-.toast.ok{background:var(--success)}
-@keyframes toastIn{from{opacity:0;transform:translateY(-14px)}}
-/* confetti */
-.confetti{position:fixed;inset:0;pointer-events:none;z-index:400;overflow:hidden}
-.cf{position:absolute;top:-16px;width:9px;height:14px;border-radius:2px;animation:cfall linear forwards}
-@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
-.wk-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#0d7a6e,#12a08f);color:#fff;padding:8px 14px;border-radius:99px;font-size:13px;font-weight:700;box-shadow:0 2px 8px rgba(13,122,110,.3)}
-@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سیستم مدیریت هزینه غذا - شرکت موعود</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment-jalaali@0.9.6/dist/moment-jalaali.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .main-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .menu-btn {
+            background: white;
+            border: none;
+            border-radius: 15px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .menu-btn .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .menu-btn h3 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .menu-btn p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            margin-left: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .stat-card h4 {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .stat-card .value {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .suggestion-box {
+            background: #f8f9fa;
+            border-right: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .suggestion-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .chart-container {
+            margin: 30px 0;
+            height: 400px;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            padding: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .main-menu {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-<div id="toasts"></div>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ سیستم مدیریت هزینه غذا</h1>
+            <p class="subtitle">شرکت موعود</p>
+        </div>
 
-<!-- ============ DASHBOARD ============ -->
-<div class="page" id="page-dash">
-  <div class="header">
-    <h1><span class="logo-badge">م</span> موعود <span class="muted">| پیکره‌ب غذا</span></h1>
-    <span class="muted" id="dash-date"></span>
-  </div>
-  <h2>خلاصه این هفته</h2>
-  <div class="grid3" id="week-cards"></div>
-  <div class="card" id="week-budget-bars"><h2>مصرف بودجه این هفته</h2><div id="budget-bars"></div></div>
-  <h2 style="margin-top:6px">خلاصه این ماه</h2>
-  <div class="grid3" id="month-cards"></div>
-  <div class="card"><h2>میانگین هر نفر — ۴ هفته اخیر</h2>
-    <div class="chart-box"><div class="skeleton" id="sk1">در حال بارگذاری…</div><canvas id="chartWeeks"></canvas></div></div>
-  <div class="card"><h2>روند روزانه هزینه هر نفر — ماه جاری</h2>
-    <div class="chart-box"><div class="skeleton" id="sk2">در حال بارگذاری…</div><canvas id="chartDaily"></canvas></div></div>
-  <div class="grid2" id="bestworst"></div>
-  <div class="card" id="bestweek-card"></div>
-  <div class="card" id="savings-card"></div>
-  <footer>ساخته شده توسط امیر</footer>
-</div>
+        <!-- Main Menu -->
+        <div id="mainMenu" class="main-menu">
+            <button class="menu-btn" onclick="showSection('entry')">
+                <div class="icon">➕</div>
+                <h3>ثبت هزینه روزانه</h3>
+                <p>ثبت هزینه صبحانه یا ناهار امروز</p>
+            </button>
+            <button class="menu-btn" onclick="showSection('reports')">
+                <div class="icon">📊</div>
+                <h3>گزارش‌ها و آمار</h3>
+                <p>مشاهده گزارش‌های تفصیلی</p>
+            </button>
+            <button class="menu-btn" onclick="showSection('suggestion')">
+                <div class="icon">💡</div>
+                <h3>پیشنهاد هزینه</h3>
+                <p>دریافت پیشنهاد هزینه امروز</p>
+            </button>
+            <button class="menu-btn" onclick="showSection('settings')">
+                <div class="icon">⚙️</div>
+                <h3>تنظیمات</h3>
+                <p>مدیریت سقف هزینه‌ها</p>
+            </button>
+        </div>
 
-<!-- ============ RECORDS ============ -->
-<div class="page" id="page-records">
-  <div class="header"><h1><span class="logo-badge">م</span> ثبت‌ها</h1>
-    <button class="btn btn-ghost btn-sm" id="btn-export">⬇ خروجی CSV</button></div>
-  <div class="tabs">
-    <button data-type="lunch" class="active">ناهار</button>
-    <button data-type="breakfast">صبحانه</button>
-  </div>
-  <div class="card" id="records-table"></div>
-  <footer>ساخته شده توسط امیر</footer>
-</div>
+        <!-- Entry Section -->
+        <div id="entrySection" class="content-section">
+            <h2 style="margin-bottom: 20px;">ثبت هزینه روزانه</h2>
+            <div id="entryAlert"></div>
+            <form id="entryForm">
+                <div class="form-group">
+                    <label>تاریخ:</label>
+                    <input type="text" id="entryDate" readonly>
+                </div>
+                <div class="form-group">
+                    <label>نوع وعده:</label>
+                    <select id="mealType" required onchange="updateMealInfo()">
+                        <option value="">انتخاب کنید</option>
+                        <option value="breakfast">صبحانه</option>
+                        <option value="lunch">ناهار</option>
+                    </select>
+                </div>
+                <div id="mealInfo" style="display: none;" class="suggestion-box">
+                    <p><strong>سقف هزینه:</strong> <span id="mealLimit"></span> تومان</p>
+                    <p><strong>روزهای مجاز:</strong> <span id="mealDays"></span></p>
+                </div>
+                <div class="form-group">
+                    <label>تعداد نفرات:</label>
+                    <input type="number" id="peopleCount" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>هزینه کل (تومان):</label>
+                    <input type="number" id="totalCost" min="0" step="1000" required>
+                </div>
+                <div id="costPerPerson" style="margin: 15px 0; font-size: 1.1em; color: #667eea;"></div>
+                <button type="submit" class="btn">ثبت هزینه</button>
+                <button type="button" class="btn btn-secondary" onclick="showSection('main')">بازگشت</button>
+            </form>
+        </div>
 
-<!-- ============ MENU ============ -->
-<div class="page active" id="page-menu">
-  <div class="header"><h1><span class="logo-badge">م</span> موعود</h1><span class="muted" id="menu-date"></span></div>
-  <p class="muted" style="margin-bottom:14px">مدیریت هزینه‌های صبحانه و ناهار شرکت</p>
-  <div class="big-menu">
-    <button class="menu-btn" onclick="openWizard()">
-      <span class="menu-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
-      <span><span class="t">ثبت وعده جدید</span><br><span class="d">راهنمای مرحله‌به‌مرحله ثبت هزینه امروز</span></span>
-    </button>
-    <button class="menu-btn" onclick="go('records')">
-      <span class="menu-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
-      <span><span class="t">گزارش‌ها و ثبت‌ها</span><br><span class="d">لیست روزانه هزینه‌ها و میانگین‌ها</span></span>
-    </button>
-    <button class="menu-btn" onclick="go('dash')">
-      <span class="menu-icon"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>
-      <span><span class="t">داشبورد</span><br><span class="d">نمودارها و خلاصه هفته و ماه</span></span>
-    </button>
-  </div>
-  <div class="card" style="margin-top:16px" id="menu-quickstats"></div>
-  <footer>ساخته شده توسط امیر</footer>
-</div>
+        <!-- Suggestion Section -->
+        <div id="suggestionSection" class="content-section">
+            <h2 style="margin-bottom: 20px;">پیشنهاد هزینه امروز</h2>
+            <div class="form-group">
+                <label>تاریخ امروز:</label>
+                <input type="text" id="suggestionDate" readonly>
+            </div>
+            <div class="form-group">
+                <label>نوع وعده:</label>
+                <select id="suggestionMealType" onchange="calculateSuggestion()">
+                    <option value="">انتخاب کنید</option>
+                    <option value="breakfast">صبحانه</option>
+                    <option value="lunch">ناهار</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>تعداد نفرات امروز:</label>
+                <input type="number" id="suggestionPeople" min="1" onchange="calculateSuggestion()">
+            </div>
+            <div id="suggestionResult"></div>
+            <button class="btn btn-secondary" onclick="showSection('main')">بازگشت</button>
+        </div>
 
-<nav class="bottom">
-  <button data-page="dash" onclick="go('dash')"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>داشبورد</button>
-  <button data-page="records" onclick="go('records')"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>گزارش‌ها</button>
-  <button data-page="menu" class="active" onclick="go('menu')"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>خانه</button>
-</nav>
+        <!-- Reports Section -->
+        <div id="reportsSection" class="content-section">
+            <h2 style="margin-bottom: 20px;">گزارش‌ها و آمار</h2>
+            
+            <div class="stats-grid" id="statsGrid"></div>
+            
+            <div style="margin: 30px 0;">
+                <label>انتخاب بازه زمانی:</label>
+                <select id="reportPeriod" onchange="updateReports()">
+                    <option value="week">هفته جاری</option>
+                    <option value="month">ماه جاری</option>
+                    <option value="all">همه موارد</option>
+                </select>
+            </div>
 
-<!-- ============ WIZARD ============ -->
-<div class="wizard-overlay" id="wiz-overlay">
-  <div class="wizard">
-    <h2 id="wiz-title">ثبت وعده جدید</h2>
-    <div class="steps" id="wiz-steps"></div>
-    <div id="wiz-body"></div>
-    <div class="wnav" id="wiz-nav"></div>
-  </div>
-</div>
-<script>
-'use strict';
-/* ===== Jalali utilities ===== */
-function div(a,b){return ~~(a/b)}
-function gregorianToJalali(gy,gm,gd){
-  const g_d_m=[0,31,59,90,120,151,181,212,243,273,304,334];
-  let jy=(gy<=1600)?0:979; gy-=(gy<=1600)?621:1600;
-  const gy2=(gm>2)?(gy+1):gy;
-  let days=(365*gy)+div(gy2+3,4)-div(gy2+99,100)+div(gy2+399,400)-80+gd+g_d_m[gm-1];
-  jy+=33*div(days,12053); days%=12053;
-  jy+=4*div(days,1461); days%=1461;
-  if(days>365){jy+=div(days-1,365);days=(days-1)%365;}
-  const jm=(days<186)?1+div(days,31):7+div(days-186,30);
-  const jd=1+((days<186)?(days%31):((days-186)%30));
-  return [jy,jm,jd];
-}
-function jalaliToGregorian(jy,jm,jd){
-  let gy=(jy<=979)?621:1600; jy-=(jy<=979)?0:979;
-  let days=(365*jy)+div(jy,33)*8+div((jy%33)+3,4)+78+jd+((jm<7)?(jm-1)*31:((jm-7)*30)+186);
-  gy+=400*div(days,146097); days%=146097;
-  if(days>36524){gy+=100*div(--days,36524);days%=36524;if(days>=365)days++;}
-  gy+=4*div(days,1461); days%=1461;
-  if(days>365){gy+=div(days-1,365);days=(days-1)%365;}
-  let gd=days+1;
-  const sal_a=[0,31,(gy%4===0&&gy%100!==0)||(gy%400===0)?29:28,31,30,31,30,31,31,30,31,30,31];
-  let gm; for(gm=0;gm<13&&gd>sal_a[gm];gm++)gd-=sal_a[gm];
-  return [gy,gm,gd];
-}
-const DAY_NAMES=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
-const MONTH_NAMES=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
-const LUNCH_DAYS=[0,1,2,3,4], BREAKFAST_DAYS=[0,1,2,3,4,5];
-const BUDGET={lunch:280000,breakfast:100000};
-const TYPE_NAME={lunch:'ناهار',breakfast:'صبحانه'};
-function dayOfWeekJalali(jy,jm,jd){
-  const [gy,gm,gd]=jalaliToGregorian(jy,jm,jd);
-  const d=new Date(gy,gm-1,gd); // JS: 0=Sun
-  return (d.getDay()+1)%7; // 0=Sat
-}
-function getWeekStartJalali(jy,jm,jd){
-  const dow=dayOfWeekJalali(jy,jm,jd);
-  let [y,m,d]=[jy,jm,jd]; d-=dow;
-  while(d<1){ m--; if(m<1){m=12;y--;} const len=(m<=6)?31:(m<=11?30:((y%4===3)?30:29)); d+=len; }
-  return y*10000+m*100+d;
-}
-function weekStartString(jy,jm,jd){const k=getWeekStartJalali(jy,jm,jd);return fmtJ(k)}
-function fmtJ(k){return `${div(k,10000)}/${String(div(k%10000,100)).padStart(2,'0')}/${String(k%100).padStart(2,'0')}`}
-function parseJ(s){const p=s.split('/').map(Number);return p[0]*10000+p[1]*100+p[2]}
-function monthLen(jy,jm){if(jm<=6)return 31;if(jm<=11)return 30;const a=jalaliToGregorian(jy,1,1),b=jalaliToGregorian(jy+1,1,1);return Math.round((Date.UTC(...b)-Date.UTC(...a))/86400000)-336;}
-/* ===== Persian display ===== */
-const faD='۰۱۲۳۴۵۶۷۸۹';
-function toFa(x){return String(x).replace(/\d/g,d=>faD[d])}
-function toLocalePersian(n){return toFa(Number(n).toLocaleString('en-US'))}
-function toman(n){return toLocalePersian(Math.round(n))+' تومان'}
-function fmtDateFa(s){const p=s.split('/');return toFa(`${p[0]}/${p[1]}/${p[2]}`)}
-/* ===== Storage ===== */
-const LS_KEY='moood_meal_data';
-let records=JSON.parse(localStorage.getItem(LS_KEY)||'[]');
-function save(){localStorage.setItem(LS_KEY,JSON.stringify(records))}
-function makeRecord(type,jstr,people,total){
-  const [jy,jm,jd]=jstr.split('/').map(Number);
-  const dow=dayOfWeekJalali(jy,jm,jd);
-  return {id:Date.now()+Math.random().toString(16).slice(2,6),jalali_date:jstr,day_of_week:dow,
-    week_start_jalali:weekStartString(jy,jm,jd),month_jalali:jm,year_jalali:jy,type,
-    people_count:people,total_cost:total,per_person_cost:Math.round(total/people),
-    budget_per_person:BUDGET[type],created_at:new Date().toISOString()};
-}
-/* ===== helpers ===== */
-function todayJalali(){const n=new Date();return gregorianToJalali(n.getFullYear(),n.getMonth()+1,n.getDate())}
-function jstrToday(){const t=todayJalali();return `${t[0]}/${String(t[1]).padStart(2,'0')}/${String(t[2]).padStart(2,'0')}`}
-function recordsWeek(type,wk){return records.filter(r=>r.type===type&&r.week_start_jalali===wk)}
-function recordsMonth(type,y,m){return records.filter(r=>r.type===type&&r.year_jalali===y&&r.month_jalali===m)}
-function daysForType(type){return type==='lunch'?LUNCH_DAYS:BREAKFAST_DAYS}
-function avg(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0}
-function suggestion(type,jstr){
-  const [jy,jm,jd]=jstr.split('/').map(Number);
-  const wk=weekStartString(jy,jm,jd);
-  const recs=recordsWeek(type,wk);
-  const spent=recs.reduce((a,r)=>a+r.per_person_cost*r.people_count,0);
-  const peopleTotal=recs.reduce((a,r)=>a+r.people_count,0);
-  const spentPP=peopleTotal?spent/peopleTotal:0;
-  const daysRecorded=new Set(recs.map(r=>r.jalali_date)).size;
-  const remaining=daysForType(type).length-daysRecorded;
-  if(remaining<=0)return{suggestion:0,spentPP,daysRecorded,remaining:0,budget:BUDGET[type]};
-  return{suggestion:Math.max(0,(BUDGET[type]-spentPP)/remaining),spentPP,daysRecorded,remaining,budget:BUDGET[type]};
-}
-/* ===== Navigation ===== */
-let charts={};
-function go(p){
-  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  document.querySelectorAll('nav.bottom button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));
-  window.scrollTo({top:0});
-  if(p==='dash')renderDash();
-  if(p==='records')renderRecords();
-  if(p==='menu')renderMenu();
-}
-/* ===== Toast & confetti ===== */
-function toast(msg,cls=''){
-  const t=document.createElement('div');t.className='toast '+cls;t.textContent=msg;
-  document.getElementById('toasts').appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .4s';setTimeout(()=>t.remove(),400)},3500);
-}
-function confetti(){
-  const c=document.createElement('div');c.className='confetti';document.body.appendChild(c);
-  const colors=['#0d7a6e','#12a08f','#f5b942','#1e8a5f','#d7efec'];
-  for(let i=0;i<70;i++){const s=document.createElement('div');s.className='cf';
-    s.style.cssText=`left:${Math.random()*100}%;background:${colors[i%5]};animation-duration:${1.6+Math.random()*1.6}s;animation-delay:${Math.random()*.5}s;transform:rotate(${Math.random()*360}deg)`;
-    c.appendChild(s);}
-  setTimeout(()=>c.remove(),4200);
-}
-</script>
-<script>
-'use strict';
-/* ===== Wizard ===== */
-const WSTEPS=['تاریخ','وعده','پیشنهاد','تعداد نفر','هزینه','ثبت'];
-let wiz={step:0,date:'',type:null,people:0,cost:0};
-function openWizard(){
-  wiz={step:0,date:jstrToday(),type:null,people:null,cost:null};
-  document.getElementById('wiz-overlay').classList.add('open');
-  renderWiz();
-}
-function closeWizard(){document.getElementById('wiz-overlay').classList.remove('open')}
-function renderWiz(){
-  document.getElementById('wiz-steps').innerHTML=WSTEPS.map((s,i)=>`<div class="step-dot ${i<=wiz.step?'done':''}"></div>`).join('');
-  const b=document.getElementById('wiz-body'),n=document.getElementById('wiz-nav');
-  const back=`<button class="btn btn-ghost" onclick="wizBack()">قبلی</button>`;
-  if(wiz.step===0){
-    b.innerHTML=`<div class="wstep active"><p class="muted" style="margin-bottom:10px">تاریخ شمسی امروز را بررسی یا ویرایش کنید (نمونه: ${toFa('1405/07/27')})</p>
-      <input type="text" id="w-date" inputmode="numeric" value="${toFa(wiz.date)}" style="text-align:center;font-size:19px;letter-spacing:2px">
-      <div class="muted" style="text-align:center;margin-top:8px" id="w-dow"></div><div class="err" id="w-err"></div></div>`;
-    const upd=()=>{const v=document.getElementById('w-date').value.replace(/[۰-۹]/g,d=>faD.indexOf(d));
-      if(/^\d{4}\/\d{1,2}\/\d{1,2}$/.test(v)){const p=v.split('/').map(Number);
-        document.getElementById('w-dow').textContent='روز: '+DAY_NAMES[dayOfWeekJalali(p[0],p[1],p[2])];}};
-    document.getElementById('w-date').addEventListener('input',upd);upd();
-    n.innerHTML=`<button class="btn btn-primary btn-block" onclick="wizNext()">بعدی</button>`;
-  }else if(wiz.step===1){
-    b.innerHTML=`<div class="wstep active"><p class="muted" style="margin-bottom:10px">برای کدام وعده ثبت می‌کنید؟</p>
-      <div class="choice">
-        <button data-t="lunch" class="${wiz.type==='lunch'?'sel':''}">🍽️ ناهار<br><span class="muted" style="font-size:11px">${toFa('شنبه تا چهارشنبه')} — ${toman(BUDGET.lunch)} / نفر</span></button>
-        <button data-t="breakfast" class="${wiz.type==='breakfast'?'sel':''}">🥐 صبحانه<br><span class="muted" style="font-size:11px">${toFa('شنبه تا پنجشنبه')} — ${toman(BUDGET.breakfast)} / نفر</span></button>
-      </div><div class="err" id="w-err"></div></div>`;
-    b.querySelectorAll('.choice button').forEach(btn=>btn.onclick=()=>{wiz.type=btn.dataset.t;renderWiz();});
-    n.innerHTML=back+`<button class="btn btn-primary" onclick="wizNext()">بعدی</button>`;
-  }else if(wiz.step===2){
-    const s=suggestion(wiz.type,wiz.date);
-    b.innerHTML=`<div class="wstep active">
-      <p class="muted" style="margin-bottom:12px">بر اساس ثبت‌های این هفته (${toFa(s.daysRecorded)} روز ثبت‌شده از ${toFa(daysForType(wiz.type).length)} روز، میانگین فعلی هر نفر: ${toman(s.spentPP)}):</p>
-      <div class="suggest-box"><div class="muted">پیشنهاد خرید برای هر نفر امروز</div>
-        <div class="num">${s.remaining>0?toman(s.suggestion):'—'}</div>
-        <div class="muted">${s.remaining>0?`اگر امروز ${toman(s.suggestion)} برای هر نفر خرج کنید، میانگین هفتگی روی ${toman(s.budget)} می‌رسد`:'همه روزهای این هفته ثبت شده است'}</div></div>
-      <p class="muted" style="margin-top:12px">💡 می‌توانید کمتر از این مبلغ هم بخرید تا پس‌انداز هفته بیشتر شود.</p></div>`;
-    n.innerHTML=back+`<button class="btn btn-primary" onclick="wizNext()">بعدی</button>`;
-  }else if(wiz.step===3){
-    b.innerHTML=`<div class="wstep active"><p class="muted" style="margin-bottom:10px">امروز چند نفر ${TYPE_NAME[wiz.type]} خوردند؟</p>
-      <input type="number" id="w-people" min="1" value="${wiz.people??''}" placeholder="مثلا ۷" style="text-align:center;font-size:19px">
-      <div class="err" id="w-err"></div></div>`;
-    n.innerHTML=back+`<button class="btn btn-primary" onclick="wizNext()">بعدی</button>`;
-  }else if(wiz.step===4){
-    const s=suggestion(wiz.type,wiz.date);
-    b.innerHTML=`<div class="wstep active"><p class="muted" style="margin-bottom:10px">کل هزینه پرداختی امروز (${TYPE_NAME[wiz.type]}) چند تومان بوده؟</p>
-      <input type="number" id="w-cost" min="0" value="${wiz.cost??''}" placeholder="مثلا ${toLocalePersian(s.suggestion*(wiz.people||1))}" style="text-align:center;font-size:19px">
-      <div class="muted" style="text-align:center;margin-top:8px">یعنی هر نفر حدود: <b id="w-pp">${wiz.cost&&wiz.people?toman(wiz.cost/wiz.people):'—'}</b></div>
-      <div class="err" id="w-err"></div></div>`;
-    document.getElementById('w-cost').addEventListener('input',e=>{
-      wiz.cost=Number(e.target.value)||0;
-      document.getElementById('w-pp').textContent=(wiz.cost&&wiz.people)?toman(wiz.cost/wiz.people):'—';});
-    n.innerHTML=back+`<button class="btn btn-primary" onclick="wizNext()">بعدی</button>`;
-  }else{
-    const pp=Math.round(wiz.cost/wiz.people), over=pp-wiz.budgetOf();
-    const ok=pp<=wiz.budgetOf();
-    b.innerHTML=`<div class="wstep active"><h2 style="margin-bottom:12px">✅ خلاصه ثبت</h2>
-      <div class="srow"><span>تاریخ</span><b>${fmtDateFa(wiz.date)} (${DAY_NAMES[dayOfWeekJalali(...wiz.date.split('/').map(Number))]})</b></div>
-      <div class="srow"><span>وعده</span><b>${TYPE_NAME[wiz.type]}</b></div>
-      <div class="srow"><span>تعداد نفر</span><b>${toFa(wiz.people)}</b></div>
-      <div class="srow"><span>هزینه کل</span><b>${toman(wiz.cost)}</b></div>
-      <div class="srow"><span>هزینه هر نفر</span><b style="color:${ok?'var(--success)':'var(--danger)'}">${toman(pp)} ${ok?'✔ زیر بودجه':'✖ بالای بودجه '+toman(over)}</b></div>
-      </div>`;
-    n.innerHTML=back+`<button class="btn btn-primary" onclick="wizSave()">ذخیره</button>`;
-  }
-}
-wiz.budgetOf=function(){return BUDGET[wiz.type]};
-function wizBack(){if(wiz.step>0){wiz.step--;renderWiz()}else closeWizard()}
-function errW(msg){const e=document.getElementById('w-err');if(e){e.textContent=msg;e.style.display='block'}}
-function wizNext(){
-  if(wiz.step===0){
-    const v=document.getElementById('w-date').value.replace(/[۰-۹]/g,d=>faD.indexOf(d)).replace(/[^0-9/]/g,'');
-    if(!/^\d{4}\/\d{1,2}\/\d{1,2}$/.test(v))return errW('فرمت تاریخ درست نیست (۱۴۰۵/۰۷/۲۷)');
-    const [jy,jm,jd]=v.split('/').map(Number);
-    if(jm<1||jm>12||jd<1||jd>monthLen(jy,jm))return errW('تاریخ نامعتبر است');
-    const dow=dayOfWeekJalali(jy,jm,jd);
-    if(dow===6)return errW('جمعه اداره تعطیل است!');
-    wiz.date=`${jy}/${String(jm).padStart(2,'0')}/${String(jd).padStart(2,'0')}`;
-    wiz.dow=dow;
-  }
-  if(wiz.step===1){if(!wiz.type)return errW('یک وعده انتخاب کنید');const d=dayOfWeekJalali(...wiz.date.split('/').map(Number));if(!daysForType(wiz.type).includes(d))return errW(`${TYPE_NAME[wiz.type]} در روز ${DAY_NAMES[d]} سرو نمی‌شود؛ تاریخ را تغییر دهید یا وعده دیگری انتخاب کنید`);}
-  if(wiz.step===3){const p=Number(document.getElementById('w-people').value);
-    if(!p||p<1)return errW('تعداد نفر را درست وارد کنید');wiz.people=p;}
-  if(wiz.step===4){const c=Number(document.getElementById('w-cost').value);if(!Number.isFinite(c)||c<0)return errW('هزینه را به‌صورت عدد معتبر وارد کنید');wiz.cost=c;}
-  wiz.step++;renderWiz();
-}
-function wizSave(){
-  const rec=makeRecord(wiz.type,wiz.date,wiz.people,wiz.cost);
-  if(rec.day_of_week!==wiz.dow){/* consistency */ }
-  const valid=daysForType(wiz.type).includes(rec.day_of_week);
-  if(!valid){errW(`${TYPE_NAME[wiz.type]} فقط روزهای ${daysForType(wiz.type).map(d=>DAY_NAMES[d]).join('، ')} ثبت می‌شود`);wiz.step=1;renderWiz();return;}
-  if(records.some(r=>r.jalali_date===wiz.date&&r.type===wiz.type)){errW('برای این تاریخ و این وعده قبلاً ثبت شده است');return;}
-  if(rec.per_person_cost>BUDGET[wiz.type]*1.2)toast('⚠️ هزینه هر نفر بیش از ۲۰٪ بالای بودجه است!','warn');
-  records.push(rec);save();closeWizard();
-  if(rec.per_person_cost<=BUDGET[wiz.type]){confetti();toast('🎉 امروز زیر بودجه بودید! آفرین','ok');}
-  else toast('ثبت شد — این روز بالای بودجه بود','warn');
-  renderMenu();
-}
-/* ===== Records page ===== */
-let recFilter='lunch';
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
-  recFilter=b.dataset.type;
-  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x===b));
-  renderRecords();
-});
-function renderRecords(){
-  const list=records.filter(r=>r.type===recFilter).sort((a,b)=>b.jalali_date.localeCompare(a.jalali_date));
-  const el=document.getElementById('records-table');
-  if(!list.length){
-    el.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10M9 20v-6h6v6"/></svg>
-      <div>هنوز هیچ ${TYPE_NAME[recFilter]}ی ثبت نشده است</div></div>`;return;}
-  const mTotal=recordsMonth(recFilter,new Date().getFullYear(),todayJalali()[1]);
-  const mAvg=mTotal.length?Math.round(mTotal.reduce((a,r)=>a+r.per_person_cost*r.people_count,0)/mTotal.reduce((a,r)=>a+r.people_count,0)):0;
-  el.innerHTML=`<div class="grid2" style="margin-bottom:12px">
-    <div class="stat"><div class="lbl">میانگین هر نفر این ماه (${TYPE_NAME[recFilter]})</div>
-      <div class="val ${mAvg<=BUDGET[recFilter]?'':'bad'}">${mAvg?toman(mAvg):'—'} <small>بودجه: ${toman(BUDGET[recFilter])}</small></div></div>
-    <div class="stat"><div class="lbl">تعداد ثبت‌های ماه</div><div class="val">${toFa(mTotal.length)} روز</div></div></div>
-    <div class="tbl-wrap"><table><thead><tr><th>تاریخ</th><th>نام روز</th><th>تعداد نفر</th><th>هزینه کل</th><th>میانگین هر نفر</th><th>وضعیت</th><th></th></tr></thead><tbody>
-    ${list.map(r=>{const ok=r.per_person_cost<=r.budget_per_person;
-      return `<tr class="${ok?'row-ok':'row-bad'}"><td>${fmtDateFa(r.jalali_date)}</td><td>${DAY_NAMES[r.day_of_week]}</td>
-      <td>${toFa(r.people_count)}</td><td>${toman(r.total_cost)}</td><td>${toman(r.per_person_cost)}</td>
-      <td class="status"><span class="badge ${ok?'badge-ok':'badge-bad'}">${ok?'زیر بودجه':'بالا بودجه'}</span></td>
-      <td><button class="btn btn-ghost btn-sm" onclick="delRec('${r.id}')">حذف</button></td></tr>`}).join('')}
-    </tbody></table></div>`;
-}
-function delRec(id){records=records.filter(r=>r.id!==id);save();renderRecords();toast('حذف شد')}
-document.getElementById('btn-export').onclick=()=>{
-  const rows=[['تاریخ','روز','وعده','تعداد نفر','هزینه کل','هزینه هر نفر','بودجه هر نفر'],
-    ...records.slice().sort((a,b)=>a.jalali_date.localeCompare(b.jalali_date)).map(r=>[r.jalali_date,DAY_NAMES[r.day_of_week],TYPE_NAME[r.type],r.people_count,r.total_cost,r.per_person_cost,r.budget_per_person])];
-  const csv='\ufeff'+rows.map(r=>r.join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download='moood-meals.csv';a.click();toast('فایل CSV دانلود شد','ok');
-};
-/* ===== Menu page ===== */
-function renderMenu(){
-  const t=todayJalali(),jys=jstrToday();
-  document.getElementById('menu-date').textContent=`${DAY_NAMES[dayOfWeekJalali(...t)]} ${fmtDateFa(jys)}`;
-  document.getElementById('dash-date').textContent=`${DAY_NAMES[dayOfWeekJalali(...t)]} ${fmtDateFa(jys)}`;
-  const m=t[1],y=t[0];
-  const mRecs=records.filter(r=>r.year_jalali===y&&r.month_jalali===m);
-  const totCost=mRecs.reduce((a,r)=>a+r.total_cost,0);
-  const totPeople=mRecs.reduce((a,r)=>a+r.people_count,0);
-  document.getElementById('menu-quickstats').innerHTML=`<h2>آمار سریع ماه ${MONTH_NAMES[m-1]} ${toFa(y)}</h2>
-    <div class="grid3"><div class="stat"><div class="lbl">روزهای ثبت‌شده</div><div class="val">${toFa(mRecs.length)}</div></div>
-    <div class="stat"><div class="lbl">مجموع نفرات</div><div class="val">${toFa(totPeople)}</div></div>
-    <div class="stat"><div class="lbl">هزینه کل ماه</div><div class="val">${toman(totCost)}</div></div></div>`;
-}
-</script>
-<script>
-/* ===== Dashboard analytics ===== */
-function jalaliNow(){return todayJalali()}
-function currentWeekString(){const t=jalaliNow();return weekStartString(...t)}
-function weekRecords(type,wk){return records.filter(r=>r.type===type&&r.week_start_jalali===wk)}
-function weightedAvg(rs){const n=rs.reduce((a,r)=>a+r.people_count,0);return n?rs.reduce((a,r)=>a+r.per_person_cost*r.people_count,0)/n:0}
-function renderDash(){
-  const [jy,jm]=jalaliNow(), wk=currentWeekString();
-  const wr=records.filter(r=>r.week_start_jalali===wk);
-  const weekCost=wr.reduce((a,r)=>a+r.total_cost,0), weekPeople=wr.reduce((a,r)=>a+r.people_count,0);
-  const weekAvg=weekPeople?weekCost/weekPeople:0, weekDays=new Set(wr.map(r=>r.jalali_date)).size;
-  document.getElementById('week-cards').innerHTML=`
-   <div class="stat"><div class="lbl">هزینه کل هفته</div><div class="val">${toman(weekCost)}</div></div>
-   <div class="stat ${weekAvg<=280000?'good':'bad'}"><div class="lbl">میانگین هر نفر (ناهار) / بودجه</div><div class="val">${toman(weightedAvg(weekRecords('lunch',wk)))} <small>از ${toman(280000)}</small></div></div>
-   <div class="stat ${weightedAvg(weekRecords('breakfast',wk))<=100000?'good':'bad'}"><div class="lbl">میانگین هر نفر (صبحانه) / بودجه</div><div class="val">${toman(weightedAvg(weekRecords('breakfast',wk)))} <small>از ${toman(100000)}</small></div></div>
-   <div class="stat"><div class="lbl">روزهای ثبت‌شده</div><div class="val">${toFa(weekDays)} روز</div></div>
-   <div class="stat"><div class="lbl">نفرات سرویس‌گرفته</div><div class="val">${toFa(weekPeople)} نفر</div></div>
-   <div class="stat"><div class="lbl">هزینه ناهار + صبحانه</div><div class="val">${toman(weekCost)}</div></div>`;
-  const mr=records.filter(r=>r.year_jalali===jy&&r.month_jalali===jm);
-  const mCost=mr.reduce((a,r)=>a+r.total_cost,0),mPeople=mr.reduce((a,r)=>a+r.people_count,0);
-  const mAvg=mPeople?mr.reduce((a,r)=>a+r.per_person_cost*r.people_count,0)/mPeople:0;
-  const lunchM=recordsMonth('lunch',jy,jm),breakM=recordsMonth('breakfast',jy,jm);
-  document.getElementById('month-cards').innerHTML=`
-    <div class="stat"><div class="lbl">هزینه کل ماه ${MONTH_NAMES[jm-1]}</div><div class="val">${toman(mCost)}</div></div>
-    <div class="stat"><div class="lbl">روزهای ثبت‌شده این ماه</div><div class="val">${toFa(new Set(mr.map(r=>r.jalali_date)).size)} روز</div></div>
-    <div class="stat"><div class="lbl">میانگین وزنی هر نفر این ماه</div><div class="val">${mAvg?toman(mAvg):'—'}</div></div>
-    <div class="stat"><div class="lbl">مجموع نفرات سرویس‌گرفته</div><div class="val">${toFa(mPeople)} نفر</div></div>
-    <div class="stat"><div class="lbl">ناهار ثبت‌شده</div><div class="val">${toFa(lunchM.length)} <small>روز</small></div></div>
-    <div class="stat"><div class="lbl">صبحانه ثبت‌شده</div><div class="val">${toFa(breakM.length)} <small>روز</small></div></div>`;
-  const bb=document.getElementById('budget-bars');
-  bb.innerHTML=['lunch','breakfast'].map(type=>{
-    const rs=weekRecords(type,wk),spent=weightedAvg(rs),bud=BUDGET[type],pct=bud?spent/bud*100:0;
-    return `<div style="margin:10px 0 14px"><div style="display:flex;justify-content:space-between;font-size:13px"><b>${TYPE_NAME[type]}</b><span>${toman(spent)} / ${toman(bud)} (${toFa(Math.round(pct))}٪)</span></div><div class="pbar"><div class="${pct>100?'over':''}" style="width:${Math.min(100,pct)}%"></div></div></div>`
-  }).join('');
-  renderCharts(jy,jm);
-  renderBestWorst(jy,jm);
-  renderBestWeek();
-  renderSavings(jy,jm);
-}
-function renderCharts(jy,jm){
-  if(typeof Chart==='undefined'){
-    ['chartWeeks','chartDaily'].forEach(id=>{const c=document.getElementById(id);c.style.display='none';});
-    document.querySelectorAll('.skeleton').forEach(x=>x.textContent='برای نمایش نمودار، اتصال اینترنت لازم است.');return;
-  }
-  const wk0=getWeekStartJalali(jy,jm,todayJalali()[2]);
-  const starts=[]; let base=wk0;
-  // Previous Saturdays in Jalali calendar
-  for(let i=3;i>=0;i--){let [y,m,d]=[jy,jm,todayJalali()[2]];let k=wk0;
-    for(let j=0;j<i;j++){let [yy,mm,dd]=[div(k,10000),div(k%10000,100),k%100]; dd-=7;while(dd<1){mm--;if(mm<1){mm=12;yy--;}dd+=monthLen(yy,mm)}k=yy*10000+mm*100+dd;}
-    starts.push(fmtJ(k));}
-  const labels=starts.map((s,i)=>`${toFa(s.slice(5))} ${i===3?'(این هفته)':''}`);
-  const wkAvg=type=>starts.map(s=>Math.round(weightedAvg(recordsWeek(type,s))));
-  const ctx=document.getElementById('chartWeeks').getContext('2d');
-  if(charts.weeks)charts.weeks.destroy();
-  charts.weeks=new Chart(ctx,{type:'bar',data:{labels,datasets:[
-    {label:'ناهار (هر نفر)',data:wkAvg('lunch'),backgroundColor:'rgba(13,122,110,.78)',borderRadius:5},
-    {label:'صبحانه (هر نفر)',data:wkAvg('breakfast'),backgroundColor:'rgba(18,160,143,.55)',borderRadius:5},
-    {label:'بودجه ناهار',data:starts.map(()=>280000),type:'line',borderColor:'#c0392b',borderDash:[6,5],pointRadius:0,borderWidth:2},
-    {label:'بودجه صبحانه',data:starts.map(()=>100000),type:'line',borderColor:'#df776b',borderDash:[3,4],pointRadius:0,borderWidth:1}
-  ]},options:chartOptions('تومان')});
-  document.getElementById('sk1').style.display='none';
-  const days=monthLen(jy,jm),dayLabels=Array.from({length:days},(_,i)=>toFa(i+1));
-  const dayDatas=['lunch','breakfast'].map(type=>{
-    const map={};records.filter(r=>r.year_jalali===jy&&r.month_jalali===jm&&r.type===type).forEach(r=>{
-      map[Number(r.jalali_date.split('/')[2])]=r.per_person_cost;});
-    return Array.from({length:days},(_,i)=>map[i+1]||null);
-  });
-  const c2=document.getElementById('chartDaily').getContext('2d');if(charts.daily)charts.daily.destroy();
-  charts.daily=new Chart(c2,{type:'line',data:{labels:dayLabels,datasets:[
-    {label:'ناهار — هر نفر',data:dayDatas[0],borderColor:'#0d7a6e',backgroundColor:'rgba(13,122,110,.13)',fill:true,tension:.32,spanGaps:false,pointRadius:3},
-    {label:'صبحانه — هر نفر',data:dayDatas[1],borderColor:'#12a08f',backgroundColor:'rgba(18,160,143,.08)',fill:true,tension:.32,spanGaps:false,pointRadius:3}
-  ]},options:chartOptions('تومان')});
-  document.getElementById('sk2').style.display='none';
-}
-function chartOptions(unit){return {responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-  plugins:{legend:{position:'bottom',labels:{font:{family:'Vazirmatn',size:11},usePointStyle:true,boxWidth:8}},
-    tooltip:{rtl:true,bodyFont:{family:'Vazirmatn'},titleFont:{family:'Vazirmatn'},callbacks:{label:ctx=>`${ctx.dataset.label}: ${toLocalePersian(ctx.raw||0)} ${unit}`}}},
-  scales:{x:{ticks:{font:{family:'Vazirmatn',size:10}},grid:{display:false}},y:{beginAtZero:true,ticks:{font:{family:'Vazirmatn',size:10},callback:v=>toLocalePersian(v)},grid:{color:'#eaf0ef'}}}}}
-function renderBestWorst(jy,jm){
-  const map={};records.filter(r=>r.year_jalali===jy&&r.month_jalali===jm).forEach(r=>{
-    if(!map[r.jalali_date])map[r.jalali_date]={cost:0,people:0};map[r.jalali_date].cost+=r.total_cost;map[r.jalali_date].people+=r.people_count;});
-  const arr=Object.entries(map).map(([date,v])=>({date,pp:v.people?v.cost/v.people:0})).sort((a,b)=>a.pp-b.pp);
-  const el=document.getElementById('bestworst');
-  if(!arr.length){el.innerHTML=`<div class="card empty" style="grid-column:1/-1">برای نمایش بهترین و پرهزینه‌ترین روز، ابتدا ثبت انجام دهید.</div>`;return;}
-  const best=arr[0],worst=arr[arr.length-1];
-  el.innerHTML=`<div class="stat good"><div class="lbl">🌟 بهترین روز این ماه</div><div class="val">${fmtDateFa(best.date)}</div><div class="muted">${toman(best.pp)} میانگین هر نفر</div></div>
-    <div class="stat bad"><div class="lbl">📈 پرهزینه‌ترین روز این ماه</div><div class="val">${fmtDateFa(worst.date)}</div><div class="muted">${toman(worst.pp)} میانگین هر نفر</div></div>`;
-}
-function renderBestWeek(){
-  const el=document.getElementById('bestweek-card');
-  const weeks=[...new Set(records.map(r=>r.week_start_jalali))];
-  const data=weeks.map(w=>{const rs=records.filter(r=>r.week_start_jalali===w);return{w,avg:weightedAvg(rs),count:new Set(rs.map(r=>r.jalali_date)).size};}).filter(x=>x.count>0).sort((a,b)=>a.avg-b.avg);
-  el.innerHTML=data.length?`<span class="wk-badge">🏆 بهترین هفته</span><p style="margin-top:10px">هفتهٔ شروع‌شده از <b>${fmtDateFa(data[0].w)}</b> کمترین میانگین هزینه را داشته است: <b style="color:var(--accent)">${toman(data[0].avg)}</b> به‌ازای هر نفر.</p>`:
-    '<h2>🏆 بهترین هفته</h2><div class="muted">با ثبت اطلاعات، بهترین هفته شما مشخص می‌شود.</div>';
-}
-function renderSavings(jy,jm){
-  const el=document.getElementById('savings-card');
-  const rs=records.filter(r=>r.year_jalali===jy&&r.month_jalali===jm);
-  let saved=0,over=0;
-  rs.forEach(r=>{const delta=(r.budget_per_person-r.per_person_cost)*r.people_count;if(delta>=0)saved+=delta;else over+=-delta;});
-  el.innerHTML=`<h2>💰 پس‌انداز و اضافه‌هزینه ماه</h2><div class="grid2">
-    <div class="stat good"><div class="lbl">صرفه‌جویی نسبت به بودجه</div><div class="val">${toman(saved)}</div></div>
-    <div class="stat bad"><div class="lbl">اضافه‌هزینه نسبت به بودجه</div><div class="val">${toman(over)}</div></div></div>`;
-}
-/* ===== Boot ===== */
-function startApp(){renderMenu();}
-startApp();
-</script>
+            <div class="chart-container">
+                <canvas id="costChart"></canvas>
+            </div>
 
+            <div class="chart-container">
+                <canvas id="avgChart"></canvas>
+            </div>
+
+            <h3 style="margin: 30px 0 20px 0;">جزئیات روزانه</h3>
+            <div class="table-container">
+                <table id="detailsTable">
+                    <thead>
+                        <tr>
+                            <th>تاریخ</th>
+                            <th>روز</th>
+                            <th>وعده</th>
+                            <th>تعداد نفر</th>
+                            <th>هزینه کل</th>
+                            <th>میانگین هر نفر</th>
+                            <th>وضعیت</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detailsBody"></tbody>
+                </table>
+            </div>
+
+            <button class="btn btn-secondary" onclick="showSection('main')">بازگشت</button>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settingsSection" class="content-section">
+            <h2 style="margin-bottom: 20px;">تنظیمات</h2>
+            <div class="form-group">
+                <label>سقف هزینه صبحانه (تومان):</label>
+                <input type="number" id="breakfastLimit" min="0" step="1000">
+            </div>
+            <div class="form-group">
+                <label>سقف هزینه ناهار (تومان):</label>
+                <input type="number" id="lunchLimit" min="0" step="1000">
+            </div>
+            <button class="btn" onclick="saveSettings()">ذخیره تنظیمات</button>
+            <button class="btn btn-secondary" onclick="showSection('main')">بازگشت</button>
+        </div>
+
+        <div class="footer">
+            طراحی و توسعه توسط: امیر | شرکت موعود © 1405
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            breakfastLimit: 100000,
+            lunchLimit: 280000
+        };
+
+        // Load saved settings
+        function loadSettings() {
+            const saved = localStorage.getItem('mealSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                CONFIG.breakfastLimit = settings.breakfastLimit || 100000;
+                CONFIG.lunchLimit = settings.lunchLimit || 280000;
+            }
+        }
+
+        function saveSettings() {
+            const breakfastLimit = parseInt(document.getElementById('breakfastLimit').value);
+            const lunchLimit = parseInt(document.getElementById('lunchLimit').value);
+            
+            if (breakfastLimit && lunchLimit) {
+                CONFIG.breakfastLimit = breakfastLimit;
+                CONFIG.lunchLimit = lunchLimit;
+                localStorage.setItem('mealSettings', JSON.stringify(CONFIG));
+                alert('تنظیمات با موفقیت ذخیره شد');
+            }
+        }
+
+        // Initialize
+        loadSettings();
+        document.getElementById('breakfastLimit').value = CONFIG.breakfastLimit;
+        document.getElementById('lunchLimit').value = CONFIG.lunchLimit;
+
+        // Get current Jalali date
+        function getCurrentJalaliDate() {
+            return moment().format('jYYYY/jMM/jDD');
+        }
+
+        function getJalaliDayName(date) {
+            const days = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'];
+            return days[moment(date, 'jYYYY/jMM/jDD').day()];
+        }
+
+        // Set current date
+        document.getElementById('entryDate').value = getCurrentJalaliDate();
+        document.getElementById('suggestionDate').value = getCurrentJalaliDate();
+
+        // Show/Hide sections
+        function showSection(section) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('mainMenu').style.display = 'none';
+            
+            if (section === 'main') {
+                document.getElementById('mainMenu').style.display = 'grid';
+            } else if (section === 'entry') {
+                document.getElementById('entrySection').classList.add('active');
+            } else if (section === 'reports') {
+                document.getElementById('reportsSection').classList.add('active');
+                updateReports();
+            } else if (section === 'suggestion') {
+                document.getElementById('suggestionSection').classList.add('active');
+            } else if (section === 'settings') {
+                document.getElementById('settingsSection').classList.add('active');
+            }
+        }
+
+        // Update meal info
+        function updateMealInfo() {
+            const mealType = document.getElementById('mealType').value;
+            const infoDiv = document.getElementById('mealInfo');
+            
+            if (mealType) {
+                const limit = mealType === 'breakfast' ? CONFIG.breakfastLimit : CONFIG.lunchLimit;
+                const days = mealType === 'breakfast' ? 'شنبه تا پنجشنبه' : 'شنبه تا چهارشنبه';
+                
+                document.getElementById('mealLimit').textContent = limit.toLocaleString('fa-IR');
+                document.getElementById('mealDays').textContent = days;
+                infoDiv.style.display = 'block';
+            } else {
+                infoDiv.style.display = 'none';
+            }
+        }
+
+        // Calculate cost per person
+        document.getElementById('totalCost').addEventListener('input', function() {
+            const people = parseInt(document.getElementById('peopleCount').value);
+            const total = parseInt(this.value);
+            
+            if (people && total) {
+                const perPerson = Math.round(total / people);
+                document.getElementById('costPerPerson').innerHTML = 
+                    `<strong>هزینه هر نفر: ${perPerson.toLocaleString('fa-IR')} تومان</strong>`;
+            }
+        });
+
+        document.getElementById('peopleCount').addEventListener('input', function() {
+            const total = parseInt(document.getElementById('totalCost').value);
+            const people = parseInt(this.value);
+            
+            if (people && total) {
+                const perPerson = Math.round(total / people);
+                document.getElementById('costPerPerson').innerHTML = 
+                    `<strong>هزینه هر نفر: ${perPerson.toLocaleString('fa-IR')} تومان</strong>`;
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('entryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const date = document.getElementById('entryDate').value;
+            const mealType = document.getElementById('mealType').value;
+            const people = parseInt(document.getElementById('peopleCount').value);
+            const totalCost = parseInt(document.getElementById('totalCost').value);
+            const costPerPerson = Math.round(totalCost / people);
+            
+            const entry = {
+                date,
+                dayName: getJalaliDayName(date),
+                mealType,
+                people,
+                totalCost,
+                costPerPerson
+            };
+            
+            // Save to localStorage
+            let entries = JSON.parse(localStorage.getItem('mealEntries') || '[]');
+            entries.push(entry);
+            localStorage.setItem('mealEntries', JSON.stringify(entries));
+            
+            // Show success message
+            const limit = mealType === 'breakfast' ? CONFIG.breakfastLimit : CONFIG.lunchLimit;
+            const status = costPerPerson <= limit ? 'success' : 'warning';
+            const message = costPerPerson <= limit 
+                ? `✅ هزینه در محدوده مجاز است (${limit.toLocaleString('fa-IR')} تومان)`
+                : `⚠️ هزینه از محدوده مجاز (${limit.toLocaleString('fa-IR')} تومان) بیشتر است`;
+            
+            document.getElementById('entryAlert').innerHTML = 
+                `<div class="alert alert-${status}">${message}<br>هزینه ثبت شد: ${totalCost.toLocaleString('fa-IR')} تومان برای ${people} نفر</div>`;
+            
+            // Reset form
+            document.getElementById('entryForm').reset();
+            document.getElementById('entryDate').value = getCurrentJalaliDate();
+            document.getElementById('mealInfo').style.display = 'none';
+            document.getElementById('costPerPerson').innerHTML = '';
+        });
+
+        // Calculate suggestion
+        function calculateSuggestion() {
+            const mealType = document.getElementById('suggestionMealType').value;
+            const people = parseInt(document.getElementById('suggestionPeople').value);
+            const currentDate = getCurrentJalaliDate();
+            
+            if (!mealType || !people) return;
+            
+            const entries = JSON.parse(localStorage.getItem('mealEntries') || '[]');
+            const currentWeek = moment(currentDate, 'jYYYY/jMM/jDD').startOf('jWeek');
+            
+            // Get entries for current week and meal type
+            const weekEntries = entries.filter(e => {
+                const entryDate = moment(e.date, 'jYYYY/jMM/jDD');
+                return e.mealType === mealType && 
+                       entryDate.isSameOrAfter(currentWeek) && 
+                       entryDate.isBefore(currentDate, 'day');
+            });
+            
+            if (weekEntries.length === 0) {
+                document.getElementById('suggestionResult').innerHTML = 
+                    '<div class="suggestion-box"><h3>💡 پیشنهاد</h3><p>هنوز داده‌ای برای این هفته ثبت نشده است. شروع با هزینه استاندارد توصیه می‌شود.</p><p><strong>هزینه پیشنهادی کل: ' + 
+                    ((mealType === 'breakfast' ? CONFIG.breakfastLimit : CONFIG.lunchLimit) * people).toLocaleString('fa-IR') + 
+                    ' تومان</strong></p></div>';
+                return;
+            }
+            
+            // Calculate average
+            const totalSpent = weekEntries.reduce((sum, e) => sum + e.totalCost, 0);
+            const totalPeople = weekEntries.reduce((sum, e) => sum + e.people, 0);
+            const avgPerPerson = Math.round(totalSpent / totalPeople);
+            
+            const limit = mealType === 'breakfast' ? CONFIG.breakfastLimit : CONFIG.lunchLimit;
+            const remainingDays = mealType === 'breakfast' ? 5 - weekEntries.length : 4 - weekEntries.length;
+            
+            // Calculate suggested cost
+            const targetTotal = limit * (weekEntries.length + remainingDays);
+            const spent = totalSpent;
+            const remaining = targetTotal - spent;
+            const suggestedPerPerson = Math.round(remaining / (remainingDays * people));
+            const suggestedTotal = suggestedPerPerson * people;
+            
+            let statusClass = 'success';
+            let statusIcon = '✅';
+            let statusText = 'در محدوده مجاز';
+            
+            if (avgPerPerson > limit) {
+                statusClass = 'danger';
+                statusIcon = '❌';
+                statusText = 'بیشتر از حد مجاز';
+            } else if (avgPerPerson > limit * 0.9) {
+                statusClass = 'warning';
+                statusIcon = '⚠️';
+                statusText = 'نزدیک به حد مجاز';
+            }
+            
+            document.getElementById('suggestionResult').innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>میانگین هفته جاری</h4>
+                        <div class="value">${avgPerPerson.toLocaleString('fa-IR')}</div>
+                        <small>تومان/نفر</small>
+                    </div>
+                    <div class="stat-card">
+                        <h4>سقف هزینه</h4>
+                        <div class="value">${limit.toLocaleString('fa-IR')}</div>
+                        <small>تومان/نفر</small>
+                    </div>
+                    <div class="stat-card">
+                        <h4>روزهای ثبت شده</h4>
+                        <div class="value">${weekEntries.length}</div>
+                        <small>روز</small>
+                    </div>
+                    <div class="stat-card">
+                        <h4>وضعیت</h4>
+                        <div class="value">${statusIcon}</div>
+                        <small>${statusText}</small>
+                    </div>
+                </div>
+                <div class="suggestion-box">
+                    <h3>💡 پیشنهاد برای امروز</h3>
+                    <p>برای رسیدن به میانگین هفتگی ${limit.toLocaleString('fa-IR')} تومان:</p>
+                    <p style="font-size: 1.3em; color: #667eea; margin: 15px 0;">
+                        <strong>هزینه پیشنهادی کل: ${Math.max(0, suggestedTotal).toLocaleString('fa-IR')} تومان</strong>
+                    </p>
+                    <p>برای ${people} نفر (${Math.max(0, suggestedPerPerson).toLocaleString('fa-IR')} تومان به ازای هر نفر)</p>
+                    ${suggestedPerPerson < 0 ? '<p class="alert alert-warning">⚠️ هزینه‌های هفته از سقف مجاز عبور کرده است. سعی کنید هزینه امروز را کمتر نگه دارید.</p>' : ''}
+                </div>
+            `;
+        }
+
+        // Update reports
+        let costChart, avgChart;
+
+        function updateReports() {
+            const entries = JSON.parse(localStorage.getItem('mealEntries') || '[]');
+            const period = document.getElementById('reportPeriod').value;
+            const currentDate = moment();
+            
+            let filteredEntries = entries;
+            
+            if (period === 'week') {
+                const weekStart = currentDate.clone().startOf('jWeek');
+                filteredEntries = entries.filter(e => 
+                    moment(e.date, 'jYYYY/jMM/jDD').isSameOrAfter(weekStart)
+                );
+            } else if (period === 'month') {
+                const monthStart = currentDate.clone().startOf('jMonth');
+                filteredEntries = entries.filter(e => 
+                    moment(e.date, 'jYYYY/jMM/jDD').isSameOrAfter(monthStart)
+                );
+            }
+            
+            // Calculate stats
+            const breakfastEntries = filteredEntries.filter(e => e.mealType === 'breakfast');
+            const lunchEntries = filteredEntries.filter(e => e.mealType === 'lunch');
+            
+            const breakfastAvg = breakfastEntries.length > 0
+                ? Math.round(breakfastEntries.reduce((sum, e) => sum + e.costPerPerson, 0) / breakfastEntries.length)
+                : 0;
+            
+            const lunchAvg = lunchEntries.length > 0
+                ? Math.round(lunchEntries.reduce((sum, e) => sum + e.costPerPerson, 0) / lunchEntries.length)
+                : 0;
+            
+            const totalCost = filteredEntries.reduce((sum, e) => sum + e.totalCost, 0);
+            
+            // Update stats grid
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <h4>میانگین صبحانه</h4>
+                    <div class="value">${breakfastAvg.toLocaleString('fa-IR')}</div>
+                    <small>تومان/نفر</small>
+                </div>
+                <div class="stat-card">
+                    <h4>میانگین ناهار</h4>
+                    <div class="value">${lunchAvg.toLocaleString('fa-IR')}</div>
+                    <small>تومان/نفر</small>
+                </div>
+                <div class="stat-card">
+                    <h4>هزینه کل</h4>
+                    <div class="value">${(totalCost / 1000000).toFixed(1)}</div>
+                    <small>میلیون تومان</small>
+                </div>
+                <div class="stat-card">
+                    <h4>تعداد کل</h4>
+                    <div class="value">${filteredEntries.length}</div>
+                    <small>وعده غذایی</small>
+                </div>
+            `;
+            
+            // Update table
+            const tbody = document.getElementById('detailsBody');
+            tbody.innerHTML = '';
+            
+            filteredEntries.reverse().forEach(entry => {
+                const limit = entry.mealType === 'breakfast' ? CONFIG.breakfastLimit : CONFIG.lunchLimit;
+                const status = entry.costPerPerson <= limit ? '✅ مجاز' : '⚠️ بیش از حد';
+                const statusClass = entry.costPerPerson <= limit ? 'success' : 'warning';
+                
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${entry.date}</td>
+                    <td>${entry.dayName}</td>
+                    <td>${entry.mealType === 'breakfast' ? 'صبحانه' : 'ناهار'}</td>
+                    <td>${entry.people}</td>
+                    <td>${entry.totalCost.toLocaleString('fa-IR')}</td>
+                    <td>${entry.costPerPerson.toLocaleString('fa-IR')}</td>
+                    <td style="color: ${statusClass === 'success' ? '#28a745' : '#ffc107'}">${status}</td>
+                `;
+            });
+            
+            // Update charts
+            updateCharts(filteredEntries);
+        }
+
+        function updateCharts(entries) {
+            // Prepare data for charts
+            const dates = [...new Set(entries.map(e => e.date))].sort();
+            const breakfastData = dates.map(date => {
+                const entry = entries.find(e => e.date === date && e.mealType === 'breakfast');
+                return entry ? entry.totalCost : null;
+            });
+            const lunchData = dates.map(date => {
+                const entry = entries.find(e => e.date === date && e.mealType === 'lunch');
+                return entry ? entry.totalCost : null;
+            });
+            
+            // Cost chart
+            const costCtx = document.getElementById('costChart').getContext('2d');
+            if (costChart) costChart.destroy();
+            
+            costChart = new Chart(costCtx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'صبحانه',
+                        data: breakfastData,
+                        borderColor: '#ffc107',
+                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'ناهار',
+                        data: lunchData,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'روند هزینه‌های روزانه',
+                            font: { size: 16, family: 'Vazirmatn' }
+                        },
+                        legend: {
+                            labels: { font: { family: 'Vazirmatn' } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { family: 'Vazirmatn' },
+                                callback: value => value.toLocaleString('fa-IR')
+                            }
+                        },
+                        x: {
+                            ticks: { font: { family: 'Vazirmatn' } }
+                        }
+                    }
+                }
+            });
+            
+            // Average chart
+            const breakfastAvgs = dates.map(date => {
+                const entry = entries.find(e => e.date === date && e.mealType === 'breakfast');
+                return entry ? entry.costPerPerson : null;
+            });
+            const lunchAvgs = dates.map(date => {
+                const entry = entries.find(e => e.date === date && e.mealType === 'lunch');
+                return entry ? entry.costPerPerson : null;
+            });
+            
+            const avgCtx = document.getElementById('avgChart').getContext('2d');
+            if (avgChart) avgChart.destroy();
+            
+            avgChart = new Chart(avgCtx, {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'صبحانه',
+                        data: breakfastAvgs,
+                        backgroundColor: 'rgba(255, 193, 7, 0.7)'
+                    }, {
+                        label: 'ناهار',
+                        data: lunchAvgs,
+                        backgroundColor: 'rgba(102, 126, 234, 0.7)'
+                    }, {
+                        label: 'سقف صبحانه',
+                        data: dates.map(() => CONFIG.breakfastLimit),
+                        type: 'line',
+                        borderColor: '#dc3545',
+                        borderDash: [5, 5],
+                        fill: false
+                    }, {
+                        label: 'سقف ناهار',
+                        data: dates.map(() => CONFIG.lunchLimit),
+                        type: 'line',
+                        borderColor: '#dc3545',
+                        borderDash: [5, 5],
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'میانگین هزینه هر نفر در مقایسه با سقف مجاز',
+                            font: { size: 16, family: 'Vazirmatn' }
+                        },
+                        legend: {
+                            labels: { font: { family: 'Vazirmatn' } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { family: 'Vazirmatn' },
+                                callback: value => value.toLocaleString('fa-IR')
+                            }
+                        },
+                        x: {
+                            ticks: { font: { family: 'Vazirmatn' } }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
