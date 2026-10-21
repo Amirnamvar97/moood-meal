@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>موعود | مدیریت هزینه غذا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0f2f33;--bg:#eaf2f1;--card:#fff;--tq:#0e8a8a;--tq2:#0a6a6e;--gold:#d9a441;--ok:#1f8a5b;--bad:#c4473a;--mut:#5d7679;--line:#d5e3e1}
+*{box-sizing:border-box;margin:0}
+body{font-family:Vazirmatn,Tahoma,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.7}
+.top{background:linear-gradient(135deg,#0a4f55,#0e8a8a);color:#fff;padding:22px 18px 70px;position:relative;overflow:hidden}
+.top:after{content:"";position:absolute;inset:auto -40px -60px auto;width:220px;height:220px;border-radius:50%;background:rgba(217,164,65,.25)}
+.top h1{font-size:28px;font-weight:800;letter-spacing:-.5px}
+.top p{opacity:.85;font-size:14px}
+.wrap{max-width:860px;margin:-48px auto 30px;padding:0 14px;position:relative}
+.card{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 6px 24px rgba(15,47,51,.08);margin-bottom:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.grid.g2m{grid-template-columns:1fr}}
+.big{border:0;font:inherit;text-align:right;cursor:pointer;background:var(--card);border-radius:18px;padding:20px;box-shadow:0 6px 24px rgba(15,47,51,.08);transition:transform .2s,box-shadow .2s;color:var(--ink)}
+.big:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(14,138,138,.22)}
+.big .e{font-size:32px}.big b{display:block;font-size:18px;margin-top:4px}.big span{color:var(--mut);font-size:13px}
+.big.main{background:linear-gradient(135deg,var(--gold),#f0c36a);grid-column:1/-1}
+.big.main span{color:#4b3a10}
+button.b{font:inherit;border:0;border-radius:12px;padding:10px 18px;cursor:pointer;background:var(--tq);color:#fff;font-weight:700;transition:.2s}
+button.b:hover{background:var(--tq2)}button.b.g{background:#e3eeed;color:var(--ink)}button.b.r{background:#f7dedb;color:var(--bad)}
+button.b.sm{padding:4px 10px;font-size:12px}
+h2{font-size:20px;margin-bottom:10px}h3{font-size:15px;margin:14px 0 8px}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
+input,select{font:inherit;width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:#fafdfc;color:var(--ink)}
+input:focus,select:focus,button:focus-visible{outline:3px solid rgba(14,138,138,.35);border-color:var(--tq)}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.seg{display:flex;background:#e3eeed;border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;font:inherit;padding:9px;border-radius:11px;background:transparent;cursor:pointer;color:var(--mut);font-weight:700;transition:.2s}
+.seg button.on{background:#fff;color:var(--tq2);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.hint{font-size:12px;color:var(--mut)}
+.sug{background:linear-gradient(135deg,#0a4f55,#0e8a8a);color:#fff;border-radius:16px;padding:16px;margin-top:12px;animation:pop .35s}
+.sug .n{font-size:30px;font-weight:800;color:#ffd88a}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+.stat{background:#f3f9f8;border-radius:14px;padding:12px}.stat small{color:var(--mut);display:block;font-size:12px}.stat b{font-size:19px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.badge{display:inline-block;padding:1px 9px;border-radius:20px;font-size:12px;font-weight:700}
+.badge.ok{background:#dcf3e8}.badge.bad{background:#f9e1de}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-size:12px;color:var(--mut);font-weight:500;text-align:right;padding:6px}
+td{padding:10px 6px;border-top:1px solid var(--line)}
+.scroll{overflow-x:auto}
+.chart{display:flex;align-items:flex-end;gap:4px;height:170px;position:relative;padding-top:6px;border-bottom:1px solid var(--line)}
+.chart .c{flex:1;border-radius:6px 6px 0 0;min-width:8px;position:relative;transition:height .6s}
+.chart .c.ok{background:var(--tq)}.chart .c.bad{background:var(--bad)}
+.chart .c i{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;font-style:normal;color:var(--mut)}
+.cap{position:absolute;right:0;left:0;border-top:2px dashed var(--gold)}
+.bar{height:10px;background:#e3eeed;border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;border-radius:8px;transition:width .6s}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:14px;z-index:9;animation:pop .3s}
+.foot{text-align:center;color:var(--mut);font-size:12px;padding:10px 0 24px}
+.back{margin-bottom:12px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="top"><div style="max-width:860px;margin:auto"><h1>🍽️ شرکت موعود</h1><p>مدیریت هزینه صبحانه و ناهار کارکنان · <span id="today"></span></p></div></div>
+<div class="wrap"><div id="app"></div><div class="foot">ساخته‌شده توسط امیر</div></div>
+<script>
+const $=s=>document.querySelector(s),FA='۰۱۲۳۴۵۶۷۸۹';
+const fa=n=>String(n).replace(/\d/g,d=>FA[d]);
+const num=s=>+String(s).replace(/[۰-۹]/g,d=>FA.indexOf(d)).replace(/[٠-٩]/g,d=>d.charCodeAt(0)-1632).replace(/[^\d.]/g,'')||0;
+const money=n=>fa(Math.round(n).toLocaleString('en-US')).replace(/,/g,'٬');
+const MON=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const DAY=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
+const T={lunch:'ناهار',breakfast:'صبحانه'},IC={lunch:'🍛',breakfast:'🥐'},MAXWD={lunch:4,breakfast:5};
+const PF=new Intl.DateTimeFormat('en-US-u-ca-persian',{year:'numeric',month:'numeric',day:'numeric',timeZone:'UTC'});
+const dt=k=>new Date(k+'T12:00:00Z'),iso=d=>d.toISOString().slice(0,10),DMS=864e5;
+function jal(d){const p={};PF.formatToParts(d).forEach(x=>p[x.type]=x.value);return{y:+p.year,m:+p.month,d:+p.day}}
+const wd=d=>(d.getUTCDay()+1)%7;
+function j2g(y,m,d){let t=Date.UTC(y+621,2,21,12)+((m<=6?(m-1)*31:186+(m-7)*30)+d-1)*DMS;
+ for(let i=0;i<12;i++){const c=jal(new Date(t)),a=y*1e4+m*100+d,b=c.y*1e4+c.m*100+c.d;if(a==b)return new Date(t);t+=(a>b?1:-1)*DMS}return null}
+const fmt=k=>{const d=dt(k),j=jal(d);return DAY[wd(d)]+' '+fa(j.d)+' '+MON[j.m-1]+' '+fa(j.y)};
+const now=new Date(),todayK=iso(new Date(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate(),12)));
+$('#today').textContent=fmt(todayK);
+const wkStart=k=>iso(new Date(dt(k).getTime()-wd(dt(k))*DMS));
+
+let DB={cap:{lunch:280000,breakfast:100000},e:{}};
+try{const s=localStorage.getItem('movood_v1');if(s)DB=Object.assign(DB,JSON.parse(s))}catch(e){}
+const save=()=>{try{localStorage.setItem('movood_v1',JSON.stringify(DB))}catch(e){toast('ذخیره‌سازی مرورگر در دسترس نیست')}};
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+
+const ents=(ty,f)=>Object.keys(DB.e).sort().filter(k=>DB.e[k][ty]&&(!f||f(k,jal(dt(k))))).map(k=>({k,...DB.e[k][ty]}));
+function agg(l,cap){const S=l.reduce((a,x)=>a+x.t,0),P=l.reduce((a,x)=>a+x.n,0),avg=P?S/P:0;
+ const av=l.map(x=>x.t/x.n);return{S,P,avg,days:l.length,diff:P*cap-S,max:l.length?l.reduce((a,x)=>x.t/x.n>a.t/a.n?x:a):null,min:l.length?l.reduce((a,x)=>x.t/x.n<a.t/a.n?x:a):null,pn:l.length?P/l.length:0}}
+const cls=(v,c)=>v<=c?'ok':'bad';
+
+let S={y:jal(dt(todayK)).y,m:jal(dt(todayK)).m,d:jal(dt(todayK)).d,type:'lunch',tab:'lunch',sm:jal(dt(todayK)).m,sy:jal(dt(todayK)).y};
+function go(v,x){S.view=v;if(x)Object.assign(S,x);render();scrollTo({top:0,behavior:'smooth'})}
+const back='<button class="b g back" onclick="go(\'home\')">← بازگشت</button>';
+function render(){const v=S.view||'home';$('#app').innerHTML=({home,entry,list,stats,settings})[v]()||'';if(v=='entry')upd()}
+
+function home(){
+ const mo=(ty)=>agg(ents(ty,(k,j)=>j.y==S.sy&&j.m==jal(dt(todayK)).m),DB.cap[ty]);
+ const L=mo('lunch'),B=mo('breakfast');
+ return `<div class="grid">
+ <button class="big main" onclick="go('entry')"><div class="e">✍️</div><b>ثبت هزینه امروز</b><span>پیشنهاد مبلغ خرید برای هر نفر + ثبت هزینه نهایی</span></button>
+ <button class="big" onclick="go('list')"><div class="e">📋</div><b>لیست روزها</b><span>هزینه، تعداد نفرات و میانگین هر روز</span></button>
+ <button class="big" onclick="go('stats')"><div class="e">📊</div><b>آمار و تحلیل</b><span>میانگین ماهانه، نمودار و مقایسه با سقف</span></button>
+ <button class="big" onclick="go('settings')"><div class="e">⚙️</div><b>تنظیمات</b><span>سقف روزانه و پشتیبان‌گیری</span></button>
+ </div>
+ <div class="card" style="margin-top:14px"><h2>این ماه تا امروز</h2><div class="grid">
+ ${[['lunch',L],['breakfast',B]].map(([t,a])=>`<div class="stat"><small>${IC[t]} میانگین ${T[t]} هر نفر</small>${a.days?`<b class="${cls(a.avg,DB.cap[t])}">${money(a.avg)} تومان</b><small>سقف: ${money(DB.cap[t])}</small>`:'<b>—</b><small>هنوز ثبت نشده</small>'}</div>`).join('')}
+ </div></div>`}
+
+function dayCount(){return 31}
+function entry(){
+ const ys=[];for(let y=S.y-2;y<=S.y+2;y++)ys.push(y);
+ const o=(a,sel,f)=>a.map(x=>`<option value="${x}" ${x==sel?'selected':''}>${f?f(x):fa(x)}</option>`).join('');
+ return back+`<div class="card"><h2>ثبت هزینه</h2>
+ <label>۱. تاریخ</label>
+ <div class="row"><select onchange="S.d=+this.value;upd()">${o([...Array(31).keys()].map(i=>i+1),S.d)}</select>
+ <select onchange="S.m=+this.value;upd()">${o([...Array(12).keys()].map(i=>i+1),S.m,x=>MON[x-1])}</select>
+ <select onchange="S.y=+this.value;upd()">${o(ys,S.y)}</select></div>
+ <div id="dn" class="hint" style="margin-top:6px"></div>
+ <label>۲. وعده غذایی</label>
+ <div class="seg" id="seg"><button data-t="lunch" onclick="S.type='lunch';upd()">🍛 ناهار</button><button data-t="breakfast" onclick="S.type='breakfast';upd()">🥐 صبحانه</button></div>
+ <label>۳. تعداد نفراتی که امروز غذایشان خریداری می‌شود</label>
+ <input id="n" inputmode="numeric" placeholder="مثلاً ۷" value="${S.n||''}" oninput="S.n=num(this.value);upd(1)">
+ <div id="sug"></div>
+ <label>۴. هزینه کل واقعی (تومان) — بعد از خرید وارد کنید</label>
+ <input id="t" inputmode="numeric" placeholder="مثلاً ۲٬۰۰۰٬۰۰۰" value="${S.t||''}" oninput="S.t=num(this.value);upd(1)">
+ <div id="tw" class="hint"></div>
+ <div style="margin-top:14px"><button class="b" onclick="saveEntry()">ذخیره هزینه</button></div>
+ <div id="res"></div></div>`}
+function curKey(){const g=j2g(S.y,S.m,S.d);return g&&jal(g).d==S.d&&jal(g).m==S.m?iso(g):null}
+function upd(soft){
+ const k=curKey(),ty=S.type;
+ document.querySelectorAll('#seg button').forEach(b=>b.classList.toggle('on',b.dataset.t==ty));
+ if(!k){$('#dn').innerHTML='<span class="bad">این تاریخ وجود ندارد.</span>';$('#sug').innerHTML='';return}
+ const w=wd(dt(k));$('#dn').innerHTML=`📅 ${fmt(k)}`+(w>MAXWD[ty]?` — <span class="bad">برای ${T[ty]} این روز تعطیل است</span>`:'');
+ if(!soft){const ex=DB.e[k]&&DB.e[k][ty];S.n=ex?ex.n:S.n;S.t=ex?ex.t:S.t;if(ex){$('#n').value=fa(ex.n);$('#t').value=money(ex.t)}}
+ const cap=DB.cap[ty],ws=wkStart(k);
+ const prev=ents(ty,kk=>kk<k&&wkStart(kk)==ws);const a=agg(prev,cap),n=S.n||0;
+ let h='';
+ if(prev.length)h+=`<div class="hint" style="margin-top:8px">روزهای قبلیِ این هفته: ${prev.map(p=>`${DAY[wd(dt(p.k))]} (${money(p.t/p.n)})`).join('، ')} — میانگین هفته تا الان: <b class="${cls(a.avg,cap)}">${money(a.avg)}</b></div>`;
+ if(n>0){let x=(cap*(a.P+n)-a.S)/n;const neg=x<0;if(neg)x=0;
+  h+=`<div class="sug"><div>پیشنهاد برای ${T[ty]} امروز</div><div class="n">${money(x)} تومان برای هر نفر</div>
+  <div>جمع کل خرید: ${money(x*n)} تومان برای ${fa(n)} نفر</div>
+  <div style="font-size:13px;opacity:.85;margin-top:6px">${prev.length?(neg?'⚠️ هفته بیش از سقف خرج شده؛ حتی با خرید صفر هم میانگین به سقف نمی‌رسد.':'با این مبلغ، میانگین هفتگی هر نفر دقیقاً روی سقف '+money(cap)+' تومان می‌نشیند.'):'هنوز روز قبلی در این هفته ثبت نشده؛ همان سقف روزانه پیشنهاد می‌شود.'}</div></div>`}
+ $('#sug').innerHTML=h;
+ $('#tw').textContent=S.t?money(S.t)+' تومان'+(n?` — هر نفر ${money(S.t/n)} تومان`:''):'';
+}
+function saveEntry(){const k=curKey(),ty=S.type;
+ if(!k)return toast('تاریخ معتبر نیست');
+ if(wd(dt(k))>MAXWD[ty])return toast('برای '+T[ty]+' این روز تعطیل است');
+ if(!(S.n>0&&S.t>0))return toast('تعداد نفرات و هزینه را وارد کنید');
+ (DB.e[k]=DB.e[k]||{})[ty]={t:S.t,n:S.n};save();
+ const cap=DB.cap[ty],ws=wkStart(k),a=agg(ents(ty,kk=>wkStart(kk)==ws),cap),d=S.t/S.n;
+ $('#res').innerHTML=`<div class="card" style="background:#f3f9f8;margin-top:14px;animation:pop .35s"><b>✅ ذخیره شد</b>
+ <p>میانگین امروز هر نفر: <b class="${cls(d,cap)}">${money(d)}</b> تومان (سقف ${money(cap)})</p>
+ <p>میانگین این هفته تا امروز: <b class="${cls(a.avg,cap)}">${money(a.avg)}</b> تومان — ${a.diff>=0?`<span class="ok">${money(a.diff)} تومان زیر بودجه</span>`:`<span class="bad">${money(-a.diff)} تومان بالاتر از بودجه</span>`}</p></div>`;toast('هزینه ثبت شد ✅')}
+
+function list(){const ty=S.tab,cap=DB.cap[ty],l=ents(ty).reverse();
+ return back+`<div class="card"><h2>لیست روزها</h2><div class="seg"><button class="${ty=='lunch'?'on':''}" onclick="go('list',{tab:'lunch'})">🍛 ناهار</button><button class="${ty=='breakfast'?'on':''}" onclick="go('list',{tab:'breakfast'})">🥐 صبحانه</button></div>
+ ${l.length?`<div class="scroll"><table><tr><th>روز و تاریخ</th><th>هزینه کل</th><th>نفرات</th><th>میانگین هر نفر</th><th></th></tr>
+ ${l.map(x=>{const a=x.t/x.n;return `<tr><td>${fmt(x.k)}</td><td>${money(x.t)}</td><td>${fa(x.n)}</td><td><span class="badge ${cls(a,cap)}">${money(a)}</span></td>
+ <td style="white-space:nowrap"><button class="b g sm" onclick="editE('${x.k}')">ویرایش</button> <button class="b r sm" onclick="delE('${x.k}')">حذف</button></td></tr>`}).join('')}</table></div>
+ <p class="hint" style="margin-top:8px">سبز: کمتر یا برابر سقف (${money(cap)} تومان) · قرمز: بیشتر از سقف</p>`:'<p class="hint" style="margin-top:14px">هنوز چیزی ثبت نشده. از صفحه اصلی «ثبت هزینه امروز» را بزنید.</p>'}</div>`}
+function editE(k){const j=jal(dt(k));go('entry',{y:j.y,m:j.m,d:j.d,type:S.tab,n:0,t:0})}
+function delE(k){if(!confirm('این روز حذف شود؟'))return;delete DB.e[k][S.tab];if(!Object.keys(DB.e[k]).length)delete DB.e[k];save();render()}
+
+function stats(){const ty=S.tab,cap=DB.cap[ty];
+ const l=ents(ty,(k,j)=>j.y==S.sy&&j.m==S.sm),a=agg(l,cap);
+ const lb=agg(ents('breakfast',(k,j)=>j.y==S.sy&&j.m==S.sm),DB.cap.breakfast),ll=agg(ents('lunch',(k,j)=>j.y==S.sy&&j.m==S.sm),DB.cap.lunch);
+ const opt=(arr,s,f)=>arr.map(x=>`<option value="${x}" ${x==s?'selected':''}>${f?f(x):fa(x)}</option>`).join('');
+ let body='<p class="hint" style="margin-top:14px">برای این ماه داده‌ای ثبت نشده است.</p>';
+ if(a.days){
+  const mx=Math.max(cap,...l.map(x=>x.t/x.n))*1.1;
+  const byW=DAY.slice(0,6).map((n,i)=>({n,a:agg(l.filter(x=>wd(dt(x.k))==i),cap)})).filter(x=>x.a.days);
+  const wk={};l.forEach(x=>(wk[wkStart(x.k)]=wk[wkStart(x.k)]||[]).push(x));
+  const both=ll.P+lb.P?(ll.S+lb.S)/Math.max(1,Math.max(ll.days,lb.days)):0;
+  body=`<div class="grid g2m" style="margin-top:14px">
+  <div class="stat"><small>میانگین هر نفر (کل ماه)</small><b class="${cls(a.avg,cap)}">${money(a.avg)} تومان</b></div>
+  <div class="stat"><small>${a.avg<=cap?'نسبت به سقف: کمتر':'نسبت به سقف: بیشتر'}</small><b class="${cls(a.avg,cap)}">${fa(Math.abs((a.avg/cap-1)*100).toFixed(1))}٪ ${a.avg<=cap?'کمتر':'بیشتر'}</b></div>
+  <div class="stat"><small>جمع کل هزینه ماه</small><b>${money(a.S)} تومان</b></div>
+  <div class="stat"><small>${a.diff>=0?'صرفه‌جویی نسبت به بودجه':'اضافه‌خرج نسبت به بودجه'}</small><b class="${a.diff>=0?'ok':'bad'}">${money(Math.abs(a.diff))} تومان</b></div>
+  <div class="stat"><small>تعداد روزهای ثبت‌شده</small><b>${fa(a.days)} روز</b></div>
+  <div class="stat"><small>میانگین نفرات هر روز</small><b>${fa(a.pn.toFixed(1))} نفر</b></div>
+  <div class="stat"><small>گران‌ترین روز (هر نفر)</small><b>${fmt(a.max.k)}</b><small>${money(a.max.t/a.max.n)} تومان</small></div>
+  <div class="stat"><small>ارزان‌ترین روز (هر نفر)</small><b>${fmt(a.min.k)}</b><small>${money(a.min.t/a.min.n)} تومان</small></div>
+  <div class="stat"><small>هزینه کل ماه برای هر نفر (مجموع ${T[ty]})</small><b>${money(a.S/(a.P/a.days))} تومان</b><small>به ازای یک کارمند حاضر در همه روزها</small></div>
+  <div class="stat"><small>روزهای بالاتر از سقف</small><b class="${l.some(x=>x.t/x.n>cap)?'bad':'ok'}">${fa(l.filter(x=>x.t/x.n>cap).length)} از ${fa(a.days)} روز</b></div></div>
+  <h3>میانگین هر نفر در روزهای ماه <span class="hint">(خط طلایی = سقف)</span></h3>
+  <div class="chart" style="margin-bottom:26px">${l.map(x=>{const v=x.t/x.n;return `<div class="c ${cls(v,cap)}" style="height:${v/mx*100}%" title="${fmt(x.k)}: ${money(v)}"><i>${fa(jal(dt(x.k)).d)}</i></div>`}).join('')}<div class="cap" style="bottom:${cap/mx*100}%"></div></div>
+  <h3>میانگین بر اساس روز هفته</h3>${byW.map(x=>`<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${x.n}</span><span>${money(x.a.avg)} تومان</span></div><div class="bar"><i style="width:${Math.min(100,x.a.avg/mx*100)}%;background:${x.a.avg<=cap?'var(--tq)':'var(--bad)'}"></i></div></div>`).join('')}
+  <h3>میانگین هفتگی</h3><div class="scroll"><table><tr><th>هفته‌ی شروع</th><th>روزها</th><th>میانگین هر نفر</th><th>وضعیت</th></tr>
+  ${Object.keys(wk).sort().map(k=>{const w=agg(wk[k],cap);return `<tr><td>${fmt(k)}</td><td>${fa(w.days)}</td><td>${money(w.avg)}</td><td><span class="badge ${cls(w.avg,cap)}">${w.avg<=cap?'در سقف':'بالاتر از سقف'}</span></td></tr>`}).join('')}</table></div>`}
+ return back+`<div class="card"><h2>آمار و تحلیل</h2><div class="seg"><button class="${ty=='lunch'?'on':''}" onclick="go('stats',{tab:'lunch'})">🍛 ناهار</button><button class="${ty=='breakfast'?'on':''}" onclick="go('stats',{tab:'breakfast'})">🥐 صبحانه</button></div>
+ <div class="row" style="margin-top:12px"><select onchange="S.sm=+this.value;render()">${opt([...Array(12).keys()].map(i=>i+1),S.sm,x=>MON[x-1])}</select><select onchange="S.sy=+this.value;render()">${opt([S.sy-2,S.sy-1,S.sy,S.sy+1].filter((v,i,a)=>a.indexOf(v)==i),S.sy)}</select></div>
+ ${body}</div>`}
+
+function settings(){return back+`<div class="card"><h2>تنظیمات</h2>
+ <label>سقف روزانه ناهار برای هر نفر (تومان)</label><input id="cl" inputmode="numeric" value="${money(DB.cap.lunch)}">
+ <label>سقف روزانه صبحانه برای هر نفر (تومان)</label><input id="cb" inputmode="numeric" value="${money(DB.cap.breakfast)}">
+ <div style="margin-top:14px"><button class="b" onclick="saveCap()">ذخیره سقف‌ها</button></div></div>
+ <div class="card"><h2>پشتیبان‌گیری</h2><p class="hint">اطلاعات روی همین مرورگر ذخیره می‌شود. برای انتقال به دستگاه دیگر یا ایمنی، پشتیبان بگیرید.</p>
+ <div class="row" style="margin-top:10px"><button class="b" onclick="exp()">دانلود پشتیبان</button><button class="b g" onclick="$('#imp').click()">بازیابی از فایل</button></div>
+ <input type="file" id="imp" accept=".json" hidden onchange="imp(this.files[0])">
+ <div style="margin-top:14px"><button class="b r" onclick="if(confirm('همه اطلاعات پاک شود؟')){DB.e={};save();toast('پاک شد')}">پاک کردن همه اطلاعات</button></div></div>`}
+function saveCap(){const l=num($('#cl').value),b=num($('#cb').value);if(!l||!b)return toast('مبلغ معتبر وارد کنید');DB.cap={lunch:l,breakfast:b};save();toast('تنظیمات ذخیره شد ✅')}
+function exp(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB)],{type:'application/json'}));a.download='movood-backup-'+todayK+'.json';a.click()}
+function imp(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.e||!d.cap)throw 0;DB=d;save();toast('بازیابی شد ✅');go('home')}catch(e){toast('فایل معتبر نیست')}};r.readAsText(f)}
+go('home');
+</script>
+</body>
+</html>
