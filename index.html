@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f766e">
+<meta name="description" content="پنل مدیریت هزینه صبحانه و ناهار شرکت موعود — ثبت هزینه، سقف روزانه، گزارش ماهانه شمسی">
+<title>مدیریت پذیرایی موعود</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">پرش به محتوای اصلی</a>
+
+<div class="app-shell">
+  <aside class="sidebar" aria-label="منوی اصلی">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">م</div>
+      <div class="brand-text">
+        <strong>موعود</strong>
+        <span>مدیریت پذیرایی موعود</span>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="بخش‌های برنامه">
+      <button class="nav-btn is-active" type="button" data-view="dashboard" aria-current="page">
+        <span class="nav-ico" aria-hidden="true">▦</span><span>داشبورد</span>
+      </button>
+      <button class="nav-btn" type="button" data-view="workflow">
+        <span class="nav-ico" aria-hidden="true">＋</span><span>ثبت روزانه</span>
+      </button>
+      <button class="nav-btn" type="button" data-view="records">
+        <span class="nav-ico" aria-hidden="true">☰</span><span>لیست هزینه‌ها</span>
+      </button>
+      <button class="nav-btn" type="button" data-view="report">
+        <span class="nav-ico" aria-hidden="true">◔</span><span>گزارش ماهانه</span>
+      </button>
+      <button class="nav-btn" type="button" data-view="settings">
+        <span class="nav-ico" aria-hidden="true">⚙</span><span>تنظیمات</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-note">
+      <p><strong>یادآوری حریم خصوصی</strong></p>
+      <p>اطلاعات فقط در همین مرورگر و همین دستگاه ذخیره می‌شود؛ بین کارکنان همگام‌سازی یا به اشتراک گذاشته نمی‌شود.</p>
+      <button class="btn btn-ghost btn-sm" type="button" data-goto="settings" data-focus="backup">پشتیبان‌گیری</button>
+    </div>
+  </aside>
+
+  <div class="main-col">
+    <header class="topbar">
+      <button class="btn btn-icon only-mobile" type="button" id="menuToggle" aria-label="نمایش منو" aria-expanded="false">☰</button>
+      <div class="topbar-title">
+        <h1>مدیریت پذیرایی موعود</h1>
+        <p id="todayLine" class="muted small">در حال خواندن تاریخ امروز…</p>
+      </div>
+      <div class="topbar-badges">
+        <span class="pill" id="todayChip" title="تاریخ امروز">—</span>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+
+      <!-- ================= داشبورد ================= -->
+      <section class="view is-active" id="view-dashboard" aria-labelledby="dashTitle">
+        <div class="hero card">
+          <div>
+            <p class="eyebrow">داشبورد</p>
+            <h2 id="dashTitle">خلاصه ماه <span id="dashMonthName">—</span></h2>
+            <p class="muted" id="dashDateLine">—</p>
+          </div>
+          <div class="hero-actions">
+            <label class="field field-inline" for="dashMonth">
+              <span>ماه شمسی (YYYY/MM)</span>
+              <input id="dashMonth" name="dashMonth" inputmode="numeric" dir="ltr" placeholder="۱۴۰۵/۰۷" autocomplete="off">
+            </label>
+          </div>
+        </div>
+
+        <div class="quick-grid" aria-label="دسترسی سریع">
+          <button class="quick card" type="button" data-goto="workflow">
+            <span class="quick-ico q1" aria-hidden="true">＋</span>
+            <span class="quick-body"><strong>ثبت هزینه روزانه</strong><small>تاریخ → وعده → تعداد نفرات → پیشنهاد → مبلغ واقعی</small></span>
+          </button>
+          <button class="quick card" type="button" data-goto="records">
+            <span class="quick-ico q2" aria-hidden="true">☰</span>
+            <span class="quick-body"><strong>لیست هزینه‌ها</strong><small>صبحانه و ناهار جداگانه، با تاریخ و روز هفته</small></span>
+          </button>
+          <button class="quick card" type="button" data-goto="report">
+            <span class="quick-ico q3" aria-hidden="true">◔</span>
+            <span class="quick-body"><strong>گزارش ماهانه</strong><small>میانگین هر نفر، روزهای بیش از سقف و روزهای برجسته</small></span>
+          </button>
+          <button class="quick card" type="button" data-goto="settings">
+            <span class="quick-ico q4" aria-hidden="true">⚙</span>
+            <span class="quick-body"><strong>تنظیمات و پشتیبان</strong><small>تغییر سقف روزانه، پشتیبان‌گیری و بازیابی</small></span>
+          </button>
+        </div>
+
+        <div class="stat-grid" id="dashStats" aria-live="polite"></div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>آخرین ثبت‌ها</h3>
+            <button class="btn btn-ghost btn-sm" type="button" data-goto="records">همه ثبت‌ها</button>
+          </div>
+          <div id="dashRecent"></div>
+        </div>
+      </section>
+
+      <!-- ================= ثبت روزانه ================= -->
+      <section class="view" id="view-workflow" aria-labelledby="wfTitle">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">ثبت روزانه</p>
+              <h2 id="wfTitle">ثبت هزینه صبحانه یا ناهار</h2>
+            </div>
+            <span class="pill" id="wfModePill">ثبت جدید</span>
+          </div>
+
+          <ol class="steps" id="wfSteps" aria-label="مراحل ثبت">
+            <li data-step="1"><span>۱</span> تاریخ</li>
+            <li data-step="2"><span>۲</span> وعده</li>
+            <li data-step="3"><span>۳</span> تعداد نفرات</li>
+            <li data-step="4"><span>۴</span> پیشنهاد</li>
+            <li data-step="5"><span>۵</span> مبلغ واقعی</li>
+          </ol>
+
+          <!-- مرحله ۱ -->
+          <div class="wizard-step is-active" data-step="1">
+            <h3>تاریخ شمسی را وارد کنید</h3>
+            <p class="muted small">تاریخ را به شکل <bdi dir="ltr">YYYY/MM/DD</bdi> بنویسید؛ رقم فارسی یا انگلیسی هر دو پذیرفته می‌شود.</p>
+            <div class="row">
+              <label class="field" for="wfDate">
+                <span>تاریخ شمسی</span>
+                <input id="wfDate" name="wfDate" inputmode="numeric" dir="ltr" placeholder="۱۴۰۵/۰۷/۲۹" autocomplete="off" aria-describedby="wfDateHint wfDateError">
+              </label>
+              <button class="btn btn-ghost" type="button" id="wfDateToday">امروز</button>
+            </div>
+            <p class="hint" id="wfDateHint">روز هفته به‌صورت خودکار محاسبه می‌شود.</p>
+            <p class="error" id="wfDateError" role="alert" hidden></p>
+            <div class="wizard-nav"><span></span><button class="btn btn-primary" type="button" data-next="2">مرحله بعد</button></div>
+          </div>
+
+          <!-- مرحله ۲ -->
+          <div class="wizard-step" data-step="2">
+            <h3>برای کدام وعده؟</h3>
+            <p class="muted small" id="wfMealNote"></p>
+            <div class="meal-grid" role="radiogroup" aria-label="وعده غذایی">
+              <button type="button" class="meal-card" data-meal="breakfast" role="radio" aria-checked="false">
+                <span class="meal-ico">☕</span><strong>صبحانه</strong><small>شنبه تا پنجشنبه · سقف <span data-cap="breakfast">—</span> تومان</small>
+              </button>
+              <button type="button" class="meal-card" data-meal="lunch" role="radio" aria-checked="false">
+                <span class="meal-ico">🍚</span><strong>ناهار</strong><small>شنبه تا چهارشنبه · سقف <span data-cap="lunch">—</span> تومان</small>
+              </button>
+            </div>
+            <p class="error" id="wfMealError" role="alert" hidden></p>
+            <div class="wizard-nav"><button class="btn btn-ghost" type="button" data-back="1">مرحله قبل</button><button class="btn btn-primary" type="button" data-next="3">مرحله بعد</button></div>
+          </div>
+
+          <!-- مرحله ۳ -->
+          <div class="wizard-step" data-step="3">
+            <h3>چند نفر آن روز غذا گرفتند؟</h3>
+            <p class="muted small">تعداد واقعی افرادی که برایشان غذا خریداری شده است (مرخصی‌ها را حساب نکنید).</p>
+            <div class="row">
+              <label class="field" for="wfAttendees">
+                <span>تعداد نفرات</span>
+                <input id="wfAttendees" name="wfAttendees" inputmode="numeric" dir="ltr" placeholder="۷" autocomplete="off" aria-describedby="wfAttendeesError">
+              </label>
+              <div class="stepper" role="group" aria-label="تنظیم تعداد نفرات">
+                <button class="btn btn-icon" type="button" id="attMinus" aria-label="یک نفر کمتر">−</button>
+                <button class="btn btn-icon" type="button" id="attPlus" aria-label="یک نفر بیشتر">+</button>
+              </div>
+            </div>
+            <p class="error" id="wfAttendeesError" role="alert" hidden></p>
+            <div class="wizard-nav"><button class="btn btn-ghost" type="button" data-back="2">مرحله قبل</button><button class="btn btn-primary" type="button" data-next="4">نمایش پیشنهاد</button></div>
+          </div>
+
+          <!-- مرحله ۴ -->
+          <div class="wizard-step" data-step="4">
+            <h3>پیشنهاد برای این روز</h3>
+            <div id="wfSuggestion" aria-live="polite"></div>
+            <div class="wizard-nav"><button class="btn btn-ghost" type="button" data-back="3">ویرایش تعداد</button><button class="btn btn-primary" type="button" data-next="5">ثبت مبلغ واقعی</button></div>
+          </div>
+
+          <!-- مرحله ۵ -->
+          <div class="wizard-step" data-step="5">
+            <h3>مبلغ واقعی هزینه امروز چقدر شد؟</h3>
+            <p class="muted small" id="wfActualNote"></p>
+            <div class="row">
+              <label class="field" for="wfTotal">
+                <span>کل هزینه (تومان)</span>
+                <input id="wfTotal" name="wfTotal" inputmode="numeric" dir="ltr" placeholder="۲٫۱۰۰٫۰۰۰" autocomplete="off" aria-describedby="wfTotalHint wfTotalError">
+              </label>
+            </div>
+            <p class="hint" id="wfTotalHint">مبلغ جداکننده‌دار هم قابل قبول است؛ مثلاً ۲٬۱۰۰٬۰۰۰</p>
+            <p class="error" id="wfTotalError" role="alert" hidden></p>
+            <div id="wfLiveStatus" class="live-status" hidden></div>
+            <div class="wizard-nav"><button class="btn btn-ghost" type="button" data-back="4">مرحله قبل</button><button class="btn btn-primary" type="button" id="wfSave">ذخیره</button></div>
+          </div>
+
+          <!-- موفقیت -->
+          <div class="wizard-step" data-step="success">
+            <div class="success-box">
+              <div class="success-check" aria-hidden="true">✓</div>
+              <h3 id="wfSuccessTitle">ثبت شد</h3>
+              <p id="wfSuccessText" class="muted"></p>
+              <div class="success-actions">
+                <button class="btn btn-primary" type="button" data-goto="records">مشاهده لیست هزینه‌ها</button>
+                <button class="btn btn-ghost" type="button" id="wfNew">ثبت جدید</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= لیست هزینه‌ها ================= -->
+      <section class="view" id="view-records" aria-labelledby="recTitle">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">لیست هزینه‌ها</p>
+              <h2 id="recTitle">هزینه‌های ثبت‌شده</h2>
+            </div>
+            <button class="btn btn-ghost btn-sm" type="button" id="recExport">خروجی CSV همین لیست</button>
+          </div>
+
+          <div class="toolbar">
+            <div class="tabs" role="tablist" aria-label="نوع وعده">
+              <button class="tab is-active" type="button" role="tab" aria-selected="true" data-meal-filter="all">همه</button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-meal-filter="breakfast">صبحانه</button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-meal-filter="lunch">ناهار</button>
+            </div>
+            <label class="field field-inline" for="recMonth">
+              <span>ماه شمسی</span>
+              <input id="recMonth" inputmode="numeric" dir="ltr" placeholder="۱۴۰۵/۰۷" autocomplete="off">
+            </label>
+            <label class="check" for="recAllMonths">
+              <input type="checkbox" id="recAllMonths"> همه ماه‌ها
+            </label>
+          </div>
+          <div id="recSummary" class="mini-stats"></div>
+          <div id="recList"></div>
+        </div>
+      </section>
+
+      <!-- ================= گزارش ماهانه ================= -->
+      <section class="view" id="view-report" aria-labelledby="repTitle">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">گزارش ماهانه</p>
+              <h2 id="repTitle">تحلیل ماه <span id="repMonthName">—</span></h2>
+            </div>
+            <label class="field field-inline" for="repMonth">
+              <span>ماه شمسی</span>
+              <input id="repMonth" inputmode="numeric" dir="ltr" placeholder="۱۴۰۵/۰۷" autocomplete="off">
+            </label>
+          </div>
+          <div id="repBody" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- ================= تنظیمات ================= -->
+      <section class="view" id="view-settings" aria-labelledby="setTitle">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">تنظیمات</p>
+              <h2 id="setTitle">سقف روزانه هر نفر</h2>
+            </div>
+          </div>
+          <form id="settingsForm" novalidate>
+            <div class="budget-grid">
+              <label class="field" for="setLunch">
+                <span>سقف ناهار (تومان / نفر / روز)</span>
+                <input id="setLunch" inputmode="numeric" dir="ltr" autocomplete="off" aria-describedby="setLunchErr">
+                <small class="hint" id="setLunchErr">پیش‌فرض موعود: ۲۸۰٬۰۰۰ تومان</small>
+              </label>
+              <label class="field" for="setBreakfast">
+                <span>سقف صبحانه (تومان / نفر / روز)</span>
+                <input id="setBreakfast" inputmode="numeric" dir="ltr" autocomplete="off" aria-describedby="setBreakfastErr">
+                <small class="hint" id="setBreakfastErr">پیش‌فرض موعود: ۱۰۰٬۰۰۰ تومان</small>
+              </label>
+            </div>
+            <p class="error" id="setError" role="alert" hidden></p>
+            <div class="row end">
+              <button class="btn btn-primary" type="submit">ذخیره تنظیمات</button>
+              <button class="btn btn-ghost" type="button" id="setDefaults">بازگردانی پیش‌فرض‌ها</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card" id="backup">
+          <div class="card-head"><h3>پشتیبان‌گیری و بازیابی</h3></div>
+          <p class="muted small">اطلاعات فقط در همین مرورگر ذخیره می‌شود. اگر مرورگر را پاک کنید یا از دستگاه دیگری استفاده کنید، ثبت‌ها از بین می‌روند یا دیده نمی‌شوند. برای امنیت، هر چند وقت یک‌بار فایل پشتیبان JSON بگیرید.</p>
+          <div class="row">
+            <button class="btn btn-soft" type="button" id="exportJson">دانلود پشتیبان JSON</button>
+            <button class="btn btn-soft" type="button" id="exportCsvAll">خروجی CSV همه ثبت‌ها</button>
+            <label class="btn btn-ghost file-btn" for="importFile">بازیابی از فایل JSON
+              <input type="file" id="importFile" accept="application/json,.json" hidden>
+            </label>
+          </div>
+          <p class="hint" id="importStatus" role="status"></p>
+        </div>
+
+        <div class="card danger-zone">
+          <div class="card-head"><h3>حذف داده‌ها</h3></div>
+          <p class="muted small">این کار همه ثبت‌های همین مرورگر را پاک می‌کند و قابل بازگشت نیست. پیش از آن پشتیبان بگیرید.</p>
+          <button class="btn btn-danger" type="button" id="clearAll">پاک کردن همه ثبت‌ها</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>درباره برنامه</h3></div>
+          <p class="muted small">مدیریت پذیرایی موعود — بدون سرور، بدون ورود، بدون ردیابی. تاریخ‌ها شمسی و همه مبالغ به تومان است. برای پشتیبانی بهتر از تقویم شمسی، از نسخه‌های جدید مرورگرهای مدرن استفاده کنید.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>ساخته‌شده با عشق، امیر</span>
+      <span class="dot" aria-hidden="true">·</span>
+      <span>موعود</span>
+    </footer>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card" role="document">
+    <h3 id="modalTitle">تأیید</h3>
+    <p id="modalText"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" type="button" data-close-modal>انصراف</button>
+      <button class="btn btn-danger" type="button" id="modalConfirm">تأیید</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
